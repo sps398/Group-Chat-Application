@@ -7,4 +7,6 @@ router.use(express.static(path.join(__basedir, 'public')));
 
 router.post('/signup', userController.registerUser);
 
+router.post('/login', userController.loginUser);
+
 module.exports = router;
