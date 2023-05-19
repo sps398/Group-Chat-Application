@@ -9,7 +9,7 @@ const registerUser = async (req, res, next) => {
     try {
         const users = await User.findAll({ where: { email: req.body.email } });
 
-        if (users[0]) return res.status(400).json({ message: "User already exist", success: false });
+        if (users[0]) return res.status(400).json({ message: "User already exist, Please login", success: false });
 
         const salt = await bcrypt.genSalt(10);
         let password = req.body.password;
@@ -22,7 +22,7 @@ const registerUser = async (req, res, next) => {
             password: password
         });
 
-        return res.status(200).json({ message: "You are registered successfully...", success: true });
+        return res.status(200).json({ message: "Successfuly signed up...", success: true });
     } catch (err) {
         console.log(err);
         return res.status(500).json({ message: "Some error occurred!", success: false });
