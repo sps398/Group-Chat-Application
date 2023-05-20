@@ -74,6 +74,17 @@ const postMessage = async (req, res, next) => {
     }
 }
 
+const getMessages = async (req, res, next) => {
+    try {
+        const result = await Chat.findAll();
+        console.log(result);
+        return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!' });
+    } catch(err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
+
 const generateAccessToken = function (user) {
     console.log("authenticating..." + process.env.PRIVATE_KEY);
     const token = jwt.sign(user, process.env.PRIVATE_KEY);
@@ -84,5 +95,6 @@ const generateAccessToken = function (user) {
 module.exports = {
     registerUser,
     loginUser,
-    postMessage
+    postMessage,
+    getMessages
 };
