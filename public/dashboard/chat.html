@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        #title {
+            text-align: center;
+            height: 5vh;
+        }
+
+        #main {
+            display: flex;
+        }
+
+        #display-users-c {
+            border: 2px solid red;
+            width: 20vw;
+            height: 70vh;
+            margin-left: 1.5vw;
+        }
+
+        #display-messages-c {
+            border: 2px solid green;
+            width: 60vw;
+            height: 70vh;
+            margin-left: 5%;
+        }
+
+        #input-message-c {
+            border: 2px solid blue;
+            width: 99.99%;
+            height: 10vh;
+            position: absolute;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(150 150 152);
+            border-top-left-radius: 5%;
+            border-top-right-radius: 5%;
+        }
+
+        #message {
+            width: 40%;
+            height: 60%;
+        }
+
+        #sendbtn {
+            width: 5%;
+            height: 60%;
+            margin-left: 2px;
+            cursor: pointer;
+            background-color: blueviolet;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="title">Chat App</h1>
+    <div id="main">
+        <div id="display-users-c">
+        </div>
+        <div id="display-messages-c">
+        </div>
+    </div>
+    <div id="input-message-c">
+        <input type="text" id="message" name="message" placeholder="type a message to send..." style="font-size: 17px;">
+        <button id="sendbtn">Send</button>
+    </div>
+</body>
+
+</html>
