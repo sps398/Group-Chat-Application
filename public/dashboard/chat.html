@@ -31,6 +31,7 @@
             width: 20vw;
             height: 70vh;
             margin-left: 1.5vw;
+            overflow-y: auto;
         }
 
         #display-messages-c {
@@ -38,6 +39,7 @@
             width: 60vw;
             height: 70vh;
             margin-left: 5%;
+            overflow-y: auto;
         }
 
         #input-message-c {
@@ -46,22 +48,30 @@
             height: 10vh;
             position: absolute;
             bottom: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             background-color: rgb(150 150 152);
             border-top-left-radius: 5%;
             border-top-right-radius: 5%;
         }
 
-        #message {
-            width: 40%;
+        #sendmessage-form {
+            width: 80%;
             height: 60%;
         }
 
+        .flex {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #message {
+            width: 50%;
+            height: 90%;
+        }
+
         #sendbtn {
-            width: 5%;
-            height: 60%;
+            width: 10%;
+            height: 90%;
             margin-left: 2px;
             cursor: pointer;
             background-color: blueviolet;
@@ -78,9 +88,11 @@
         <div id="display-messages-c">
         </div>
     </div>
-    <div id="input-message-c">
-        <input type="text" id="message" name="message" placeholder="type a message to send..." style="font-size: 17px;">
-        <button id="sendbtn">Send</button>
+    <div id="input-message-c" class="flex">
+        <form action="#" id="sendmessage-form" class="flex">
+            <input type="text" id="message" name="message" placeholder="type a message to send..." style="font-size: 17px;">
+            <button id="sendbtn" type="submit">Send</button>
+        </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="../js/initials.js"></script>
