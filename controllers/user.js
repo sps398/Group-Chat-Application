@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Chat = require('../models/chat');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sequelize = require('../util/database');
@@ -55,6 +56,24 @@ const loginUser = async (req, res, next) => {
     }
 };
 
+const postMessage = async (req, res, next) => {
+    try {
+        const user = req.user;
+    
+        const newMessage = {
+            message: req.body.message,
+            userId: user.id
+        };
+    
+        await Chat.create(newMessage);
+
+        return res.status(200).json({ success: true, message: "Message posted successfully" });
+    } catch(err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: "Something went wrong!" });
+    }
+}
+
 const generateAccessToken = function (user) {
     console.log("authenticating..." + process.env.PRIVATE_KEY);
     const token = jwt.sign(user, process.env.PRIVATE_KEY);
@@ -64,5 +83,6 @@ const generateAccessToken = function (user) {
 
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    postMessage
 };
