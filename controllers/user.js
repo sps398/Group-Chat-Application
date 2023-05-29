@@ -3,6 +3,8 @@ const Chat = require('../models/chat');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sequelize = require('../util/database');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 const path = require('path');
 require('dotenv').config();
 
@@ -66,9 +68,9 @@ const postMessage = async (req, res, next) => {
             userName: user.name
         };
     
-        await Chat.create(newMessage);
+        const response = await Chat.create(newMessage);
 
-        return res.status(200).json({ success: true, message: "Message posted successfully" });
+        return res.status(200).json({ success: true, message: "Message posted successfully", messageId: response.id, userName: user.name });
     } catch(err) {
         console.log(err);
         return res.status(500).json({ success: false, message: "Something went wrong!" });
@@ -77,7 +79,25 @@ const postMessage = async (req, res, next) => {
 
 const getMessages = async (req, res, next) => {
     try {
-        const result = await Chat.findAll();
+        const lastMessageId = Number(req.query.lastMessageId);
+        if(lastMessageId === -1)
+            return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: [] });    
+        const result = await Chat.findAll({ where: { id : { [Op.gt] : lastMessageId } } });
+        console.log(result);
+        return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: result });
+    } catch(err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
+
+const getOlderMessages = async (req, res, next) => {
+    try {
+        const lastMessageId = Number(req.query.lastMessageId);
+        if(lastMessageId === -1)
+            return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: [] });    
+        const result = await Chat.findAll({ where: { id : { [Op.lt] : lastMessageId } } });
+        console.log(result);
         return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: result });
     } catch(err) {
         console.log(err);
@@ -96,5 +116,6 @@ module.exports = {
     registerUser,
     loginUser,
     postMessage,
-    getMessages
+    getMessages,
+    getOlderMessages
 };

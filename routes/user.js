@@ -14,4 +14,6 @@ router.post('/sendmessage', userAuthentication.authenticate, userController.post
 
 router.get('/messages', userAuthentication.authenticate, userController.getMessages);
 
+router.get('/olderMessages', userAuthentication.authenticate, userController.getOlderMessages);
+
 module.exports = router;
