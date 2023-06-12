@@ -16,4 +16,10 @@ router.get('/messages', userAuthentication.authenticate, userController.getMessa
 
 router.get('/olderMessages', userAuthentication.authenticate, userController.getOlderMessages);
 
+router.post('/createGroup', userAuthentication.authenticate, userController.createGroup);
+
+router.get('/getAllUsers', userAuthentication.authenticate, userController.getAllUsers);
+
+router.get('/groups', userAuthentication.authenticate, userController.getGroups);
+
 module.exports = router;

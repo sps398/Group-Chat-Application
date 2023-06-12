@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Chat = require('../models/chat');
+const Group = require('../models/group');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sequelize = require('../util/database');
@@ -58,6 +59,17 @@ const loginUser = async (req, res, next) => {
     }
 };
 
+const getAllUsers = async (req, res, next) => {
+    try {
+        const users = await User.findAll({
+            attributes: { exclude: ['password'] }
+        });
+        return res.status(200).json({ success: true, users: users });
+    } catch(err) {
+        return res.status(500).json({ message: "Some error occurred!", success: false });
+    }
+};
+
 const postMessage = async (req, res, next) => {
     try {
         const user = req.user;
@@ -65,7 +77,8 @@ const postMessage = async (req, res, next) => {
         const newMessage = {
             message: req.body.message,
             userId: user.id,
-            userName: user.name
+            userName: user.name,
+            groupId: req.query.groupId
         };
     
         const response = await Chat.create(newMessage);
@@ -75,15 +88,15 @@ const postMessage = async (req, res, next) => {
         console.log(err);
         return res.status(500).json({ success: false, message: "Something went wrong!" });
     }
-}
+}       
 
 const getMessages = async (req, res, next) => {
     try {
         const lastMessageId = Number(req.query.lastMessageId);
+        const groupId = Number(req.query.groupId);
         if(lastMessageId === -1)
             return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: [] });    
-        const result = await Chat.findAll({ where: { id : { [Op.gt] : lastMessageId } } });
-        console.log(result);
+        const result = await Chat.findAll({ where: { id : { [Op.gt] : lastMessageId }, groupId: groupId } });
         return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: result });
     } catch(err) {
         console.log(err);
@@ -97,11 +110,52 @@ const getOlderMessages = async (req, res, next) => {
         if(lastMessageId === -1)
             return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: [] });    
         const result = await Chat.findAll({ where: { id : { [Op.lt] : lastMessageId } } });
-        console.log(result);
         return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: result });
     } catch(err) {
         console.log(err);
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
+
+const createGroup = async (req, res, next) => {
+    try {
+        let newGroup = req.body.newGroup;
+        let members = newGroup.members;
+
+        newGroup = {
+            name: newGroup.name,
+            description: newGroup.description
+        };
+
+        const group = await Group.create(newGroup);
+
+        console.log('GROUP CREATED!');
+
+        members.forEach(async (userId) => {
+            try {
+                const user = await User.findOne({ where: { id: userId } });
+                await group.addUser(user);
+                console.log('User ' + user.id + " successfully added to group!");
+            } catch(err) {
+                console.log(err);
+                // throw new Error(err);
+            }
+        })
+
+        return res.status(200).json({ success: true, group: group });
+
+    } catch(err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
+
+const getGroups = async (req, res, next) => {
+    try {
+        const groups = await req.user.getGroups();
+        return res.status(200).json({ success: true, groups: groups });
+    } catch(err) {
+        return res.status(500).json({ message: 'Something went wron!', success: false });
     }
 }
 
@@ -117,5 +171,8 @@ module.exports = {
     loginUser,
     postMessage,
     getMessages,
-    getOlderMessages
+    getOlderMessages,
+    createGroup,
+    getAllUsers,
+    getGroups
 };

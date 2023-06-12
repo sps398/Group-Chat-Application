@@ -5,98 +5,104 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/chat.css">
     <title>Chat</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        #title {
-            text-align: center;
-            height: 5vh;
-        }
-
-        #main {
-            display: flex;
-        }
-
-        #display-users-c {
-            border: 2px solid red;
-            width: 20vw;
-            height: 70vh;
-            margin-left: 1.5vw;
-            overflow-y: auto;
-        }
-
-        #display-messages-c {
-            border: 2px solid green;
-            width: 60vw;
-            height: 70vh;
-            margin-left: 5%;
-            overflow-y: auto;
-        }
-
-        #input-message-c {
-            border: 2px solid blue;
-            width: 99.99%;
-            height: 10vh;
-            position: absolute;
-            bottom: 0;
-            background-color: rgb(150 150 152);
-            border-top-left-radius: 5%;
-            border-top-right-radius: 5%;
-        }
-
-        #sendmessage-form {
-            width: 80%;
-            height: 60%;
-        }
-
-        .flex {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #message {
-            width: 50%;
-            height: 90%;
-        }
-
-        #sendbtn {
-            width: 10%;
-            height: 90%;
-            margin-left: 2px;
-            cursor: pointer;
-            background-color: blueviolet;
-            color: white;
-        }
-    </style>
 </head>
 
 <body>
-    <h1 id="title">Chat App</h1>
-    <div id="main">
-        <div id="display-users-c">
+    <nav>
+        <div class="titlec">
+            <h1 id="title" class="bold">Chat App</h1>
         </div>
-        <div id="display-messages-c">
+        <div class="user-profile">
+            <h3 style="cursor: pointer;"><span id="username"></span> <span><i class="fa-sharp fa-solid fa-caret-down"></i></span></h3>
+        </div>
+        <div class="newgrpbtnc flex">
+            <button id="newgrpbtn" onclick="$('#overlay1').show();">New group</button>
+        </div>
+    </nav>
+    <div id="main">
+        <div id="left">
+            <div id="left-header" style="background-color: rgb(59, 59, 109);">
+                <h2 class="center" style="color: white;">My groups</h2>
+            </div>
+            <div id="groups-c" style="padding-top: 10px;">
+                <!-- <div class="group-element">
+                    <h3 class="group-name">Group1</h3>
+                </div> -->
+            </div>
+        </div>
+        <div id="right">
+            <div id="default" class="flex flex-column" style="width:100%;height:100%;background-color: rgb(193, 203, 212);">
+                <h1 style="color:blue;">ChatNexus</h1>
+                <p class="bold"><span><i class="fa-solid fa-lock"></i></span>&nbsp;&nbsp;All chats are end to end encrypted</p>
+                <h3 class="bold" style="color: green;">Join or select a group to chat with others.</h3>
+            </div>
+            <div id="active" style="display:none;">
+                <div id="right-header" style="background-color: rgb(176, 176, 222);color: white;">
+                </div>
+                <div id="messagesc">
+                </div>
+                <div id="input-message-c" class="flex">
+                    <form action="#" id="sendmessage-form" class="flex">
+                        <input type="text" id="message" name="message" placeholder=" type a message to send..."
+                            style="font-size: 17px;">
+                        <button id="sendbtn" type="submit">Send</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-    <div id="input-message-c" class="flex">
-        <form action="#" id="sendmessage-form" class="flex">
-            <input type="text" id="message" name="message" placeholder="type a message to send..." style="font-size: 17px;">
-            <button id="sendbtn" type="submit">Send</button>
-        </form>
+    <div id="overlay1" class="overlay">
+        <div id="add-group-dialog" class="dialog-box bold">
+            <h3 class="dialog-title">New group</h3>
+            <form action="#" id="add-group-form">
+                <div class="form-element">
+                    <label for="name">Name:</label>
+                    <input type="text" id="group-name" value="" placeholder="Name of group...">
+                </div>
+                <div class="form-element">
+                    <label for="desc">Description:</label>
+                    <input type="text" id="group-desc" placeholder="Add description...">
+                </div>
+                <div class="form-element">
+                    <button onclick="showUsersDialog()" style="background-color: green;color:white;padding:5px;cursor: pointer;">+ Add
+                        members</button>
+                </div>
+                <div class="footer">
+                    <button type="submit" id="add-group" class="bold" onclick="addNewGroup()">Create</button>
+                    <button id="cancel" class="bold" onclick="$('#overlay1').hide();">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="overlay2" class="overlay">
+        <div id="add-users-dialog" class="dialog-box bold" style="color:black;">
+            <h3 class="dialog-title">Add Users</h3>
+            <div id="user-list">
+                <!-- <div class="user">
+                    <input type="checkbox" id="user1" name="user1" value="User1">
+                    <label for="user1">User 1</label>
+                </div> -->
+            </div>
+            <button id="add-users-btn" class="btn" onclick="addMembers()">Add</button>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://kit.fontawesome.com/4f9275b3db.js" crossorigin="anonymous"></script>
     <script src="../js/initials.js"></script>
     <script src="../js/chat.js"></script>
+
+    <script>
+
+        $("#overlay2").click(function(e) {
+            if(e.target.id === 'overlay2')
+                $("#overlay2").hide();
+        })
+        
+    </script>
 </body>
 
 </html>
