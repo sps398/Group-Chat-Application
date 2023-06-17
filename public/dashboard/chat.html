@@ -17,7 +17,8 @@
             <h1 id="title" class="bold">Chat App</h1>
         </div>
         <div class="user-profile">
-            <h3 style="cursor: pointer;"><span id="username"></span> <span><i class="fa-sharp fa-solid fa-caret-down"></i></span></h3>
+            <h3 style="cursor: pointer;"><span id="username"></span> <span><i
+                        class="fa-sharp fa-solid fa-caret-down"></i></span></h3>
         </div>
         <div class="newgrpbtnc flex">
             <button id="newgrpbtn" onclick="$('#overlay1').show();">New group</button>
@@ -35,13 +36,33 @@
             </div>
         </div>
         <div id="right">
-            <div id="default" class="flex flex-column" style="width:100%;height:100%;background-color: rgb(193, 203, 212);">
+            <div id="default" class="flex flex-column"
+                style="width:100%;height:100%;background-color:rgb(193, 203, 212);display:none;">
                 <h1 style="color:blue;">ChatNexus</h1>
-                <p class="bold"><span><i class="fa-solid fa-lock"></i></span>&nbsp;&nbsp;All chats are end to end encrypted</p>
-                <h3 class="bold" style="color: green;">Join or select a group to chat with others.</h3>
+                <p class="bold" style="color: green;"><span><i class="fa-solid fa-lock" style="color: black;"></i></span>&nbsp;&nbsp;All chats are end to end
+                    encrypted</p>
+                <h3 class="bold">Join or select a group to chat with others.</h3>
+            </div>
+            <div id="group-profile" class="" style="width:100%;height:100%;background-color: rgb(193, 203, 212);display:none;">
+                <h2 id="group-profile-title"><span class="left-nav" style="color: grey;cursor: pointer;padding: 5px;"><i class="fa-solid fa-arrow-left" onclick="backToChatScreen()"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;Group Participants</h2>
+                <hr>
+                <input type="search" id="search-users" placeholder=" Search by name or email..." />
+                <div id="participants-list">
+                    <!-- <div class="user-element">
+                        <span id="username" style="margin-right: 10px;">Shashank</span>
+                        <button style="color: black;cursor:default;margin-right: 10px;">Admin User</button>
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" onclick="toggleDropdown()"><i class="fa-solid fa-circle-chevron-down" style="font-size: large;"></i></button>
+                            <ul class="dropdown-menu" id="dropdownMenu">
+                                <li class="dropdown-list-item">Make admin</li>
+                                <li class="dropdown-list-item">Remove User</li>
+                            </ul>
+                        </div>
+                    </div> -->
+                </div>
             </div>
             <div id="active" style="display:none;">
-                <div id="right-header" style="background-color: rgb(176, 176, 222);color: white;">
+                <div id="right-header">
                 </div>
                 <div id="messagesc">
                 </div>
@@ -68,7 +89,8 @@
                     <input type="text" id="group-desc" placeholder="Add description...">
                 </div>
                 <div class="form-element">
-                    <button onclick="showUsersDialog()" style="background-color: green;color:white;padding:5px;cursor: pointer;">+ Add
+                    <button onclick="showUsersDialog()"
+                        style="background-color: green;color:white;padding:5px;cursor: pointer;">+ Add
                         members</button>
                 </div>
                 <div class="footer">
@@ -97,11 +119,37 @@
 
     <script>
 
-        $("#overlay2").click(function(e) {
-            if(e.target.id === 'overlay2')
+        $("#overlay2").click(function (e) {
+            if (e.target.id === 'overlay2')
                 $("#overlay2").hide();
         })
-        
+
+        function toggleDropdown(participantId) {
+            // const dropdown = document.getElementById('dropdown');
+            // dropdown.innerHTML +=  `
+                
+            // `;
+            
+            const dropdownMenu = document.getElementById(`dropdown-menu-${participantId}`);
+
+            dropdownMenu.classList.add('show');
+            
+            document.addEventListener('click', function (event) {
+                var dropdownMenu = document.getElementById(`dropdown-menu-${participantId}`);
+                var dropdownToggle = document.getElementById(`dropdown-toggle-${participantId}`);
+                console.log(!dropdownMenu.contains(event.target), !dropdownToggle.contains(event.target));
+                if (dropdownMenu && dropdownToggle && !dropdownMenu.contains(event.target) && !dropdownToggle.contains(event.target)) {
+                    console.log(event.target);
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+        }
+
+        function backToChatScreen() {
+            $('#group-profile').hide();
+            $('#active').show();
+        }
+
     </script>
 </body>
 

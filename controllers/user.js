@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const Chat = require('../models/chat');
 const Group = require('../models/group');
+const Admin = require('../models/admin');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sequelize = require('../util/database');
@@ -131,6 +132,11 @@ const createGroup = async (req, res, next) => {
 
         console.log('GROUP CREATED!');
 
+        await Admin.create({
+            groupId: group.id,
+            adminId: req.user.id
+        });
+
         members.forEach(async (userId) => {
             try {
                 const user = await User.findOne({ where: { id: userId } });
@@ -159,6 +165,73 @@ const getGroups = async (req, res, next) => {
     }
 }
 
+const getParticipants = async (req, res, next) => {
+    try {
+        const groupId = req.query.groupId;
+        const group = await Group.findOne({ where: { id: groupId } });
+        const participants = await group.getUsers({ attributes: ['id', 'name', 'email', 'phoneNo'] });
+        console.log(participants);
+
+        return res.status(200).json({ success: true, participants: participants });
+    } catch(err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: "Something went wrong!" });
+    }
+}
+
+const getGroupAdmins = async (req, res, next) => {
+    try {
+        const groupId = req.query.groupId;
+        const result = await Admin.findAll({ where: { groupId: groupId } });
+        console.log(result);
+
+        return res.status(200).json({ success: true, admins: result });
+    } catch(err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
+
+const addGroupAdmin = async (req, res, next) => {
+    try {
+        const userId = req.body.participantId;
+        const groupId = req.params.groupId;
+    
+        await Admin.create({ groupId: groupId, adminId: userId });
+
+        return res.status(200).json({ success: true, message: 'Added as an admin successfully' });
+    } catch(err) {
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
+
+const removeGroupAdmin = async (req, res, next) => {
+    try {
+        const userId = req.params.participantId;
+        const groupId = req.params.groupId;
+    
+        await Admin.destroy({ where: { groupId: groupId, adminId: userId }});
+
+        return res.status(200).json({ success: true, message: 'Removed as an admin successfully' });
+    } catch(err) {
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
+
+const removeUserFromGroup = async (req, res, next) => {
+    try {
+        const userId = req.params.participantId;
+        const groupId = req.params.groupId;
+    
+        const group = await Group.findOne({ where: { id: groupId } });
+        await group.removeUser(userId);
+
+        return res.status(200).json({ success: true, message: 'Removed user from group successfully' });
+    } catch(err) {
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
+
 const generateAccessToken = function (user) {
     console.log("authenticating..." + process.env.PRIVATE_KEY);
     const token = jwt.sign(user, process.env.PRIVATE_KEY);
@@ -174,5 +247,10 @@ module.exports = {
     getOlderMessages,
     createGroup,
     getAllUsers,
-    getGroups
+    getGroups,
+    getParticipants,
+    getGroupAdmins,
+    addGroupAdmin,
+    removeGroupAdmin,
+    removeUserFromGroup
 };

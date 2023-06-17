@@ -34,6 +34,7 @@ Message.belongsTo(Group);
 sequelize
     .sync()
     // .sync({alter:true})
+    // .sync({force:true})
     .then(result => {
         console.log(__dirname);
         const port = process.env.PORT || 3000;

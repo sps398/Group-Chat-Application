@@ -91,6 +91,16 @@ nav {
     /* background-color: #202C33; */
 }
 
+#right-header {
+  background-color: rgb(176, 176, 222);
+  color: white;
+  cursor: pointer;
+}
+
+#right-header:hover {
+  background-color: rgb(129, 129, 213);
+}
+
 #left {
     /* border: 2px solid red; */
     width: 30vw;
@@ -318,4 +328,121 @@ nav {
 
   .active {
     background-color: rgb(90, 149, 201);
+  }
+
+  #group-profile-title {
+    margin: 0;
+    margin-left: 10px;
+    padding-top: 20px;
+  }
+
+  #group-profile > hr {
+    border: 3px solid black;
+  }
+
+  #participants-list {
+    padding: 20px;
+  }
+
+  .user-element-container {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .user-element {
+    position: relative;
+    width: 40%;
+    padding: 10px;
+    color: white;
+    display: inline-block;
+    background-color: rgb(44, 83, 117);
+    border-radius: 10px;
+  }
+
+  .user-element button {
+    position: absolute;
+    right: 20%;
+    top: 15%;
+    padding: 5px;
+    color: white;
+    cursor: pointer;
+  }
+
+  #make-admin-btn {
+    background-color: green;
+  }
+
+  #remove-user-btn {
+    background-color: red;
+  }
+
+  /* dropdown */
+
+  .dropdown {
+    position: absolute;
+    right: 1%;
+    top: 15%;
+    display: inline-block;
+    background-color: rgb(44, 83, 117);
+  }
+  
+  .dropdown-toggle {
+    padding: 10px;
+    /* background-color: #eee; */
+    border: none;
+    cursor: pointer;
+    background-color: rgb(44, 83, 117);
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 150px;
+    padding: 0;
+    list-style: none;
+    background-color: #fff;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transform: translateY(-10px);
+  }
+  
+  .dropdown-menu.show {
+    z-index: 1000;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .dropdown-menu li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    color: black;
+    cursor: pointer;
+  }
+  
+  .dropdown-menu li:hover {
+    /* background-color: #f9f9f9; */
+    background-color: rgb(178, 186, 193);
+  }
+
+  #search-users {
+    margin-left: 20px;
+    margin-top: 20px;
+    width: 40%;
+    height: 2rem;
+    border: none;
+    border-radius: 10px;
+  }
+
+  #search-users:focus {
+    outline: none;
+  }
+
+  .left-nav:hover {
+    background-color: rgb(152, 175, 196);
+    border-radius: 5px;
+    color: white;
   }
