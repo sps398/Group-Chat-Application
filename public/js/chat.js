@@ -66,12 +66,14 @@ function showParticipants(groupId, participants, groupAdmins) {
         if (groupAdmins.has(participant.id))
             admin = true;
 
-        console.log(participant);
+        if(participant.id === user.userId)
+            participant.name = 'You';
 
         participantsList.innerHTML += `
         <div class="user-element-container">
             <div id="user-element-${participant.id}" class="user-element">
                 <span class="username" style="margin-right: 10px;">${participant.name}</span>
+                <span class="username" style="margin-right: 10px;">Phone No: ${participant.phoneNo}</span>
                 <button id="admin-btn-${participant.id}" class="admin-btn" style="color: black;cursor:default;margin-right: 10px;display:none;">Admin</button>
                 
             </div>
@@ -87,14 +89,6 @@ function showParticipants(groupId, participants, groupAdmins) {
     })
 
 }
-
-// <div id="dropdown-${participant.id}" class="dropdown">
-//     <button id="dropdown-toggle-${participant.id}" class="dropdown-toggle" onclick="toggleDropdown(${participant.id})"><i class="fa-solid fa-circle-chevron-down" style="font-size: large;"></i></button>
-//     <ul class="dropdown-menu" id="dropdown-menu-${participant.id}">
-//         <li class="dropdown-list-item">Make admin</li>
-//         <li class="dropdown-list-item">Remove User</li>
-//     </ul>
-// </div>
 
 function createDropdown(groupId, participantId, isAdmin) {
     if(participantId === user.userId)
