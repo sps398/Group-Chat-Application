@@ -16,6 +16,6 @@ loginForm.addEventListener('submit', async (e) => {
         alert(result.data.message + "..." + "Press ok to continue");
         window.location.href = "../../dashboard/chat.html";
     } catch(err) {
-        alert(err.response.data.message);
+        console.log(err);
     }
 });

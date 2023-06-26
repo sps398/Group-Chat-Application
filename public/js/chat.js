@@ -330,8 +330,9 @@ sendMessageForm.addEventListener('submit', async (e) => {
         return;
     }
 
-    let recentMessage;
+    // let recentMessage;
     try {
+        socket.emit('new message', message);
         const response = await sendMessage(message);
         messageInput.value = '';
         // recentMessage = {

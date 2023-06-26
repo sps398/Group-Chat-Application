@@ -12,12 +12,19 @@ const Message = require('./models/chat');
 require('dotenv').config();
 
 const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
 
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.use('/user', userRoutes);
+
+app.get('/', (req, res) => {
+    res.redirect('/dashboard/chat.html');
+})
 
 app.use((req, res) => {
     console.log(req.url);
@@ -38,8 +45,25 @@ sequelize
     // .sync({alter:true})
     // .sync({force:true})
     .then(result => {
-        console.log(__dirname);
         const port = process.env.PORT || 3000;
-        app.listen(port);
+        server.listen(port);
     })
     .catch(err => console.log(err));
+
+// socket.io
+    
+const io = new Server(server);
+    
+io.on('connection', (socket) => {
+    console.log(socket.id, ' user connected');
+  
+    io.emit('new connection', socket.id);
+  
+    socket.on('disconnect', () => {
+      io.emit('disconnected',  `${socket.id} disconnected`);
+    });
+  
+    socket.on('new message', (msg) => {
+        socket.broadcast.emit('new message', socket.id, msg);
+    });
+});

@@ -32,4 +32,4 @@ router.delete('/groups/:groupId/admins/remove/:participantId', userAuthenticatio
 
 router.delete('/groups/:groupId/users/remove/:participantId', userAuthentication.authenticate, userController.removeUserFromGroup);
 
-module.exports = router;
+module.exports = router;    
