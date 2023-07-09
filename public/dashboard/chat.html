@@ -7,30 +7,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-        <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Belanosima&display=swap" rel="stylesheet">
         <link rel="preconnect" href="https://fonts.googleapis.com"> -->
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Ysabeau+Infant:wght@300&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="../css/chat.css">
-        <title>ChatNexus</title>
-        <link rel="icon" type="image/png" href="/images/favicon_io/favicon-16x16.png" sizes="16x16">
-        <link rel="icon" type="image/png" href="/images/favicon_io/favicon-32x32.png" sizes="32x32">
-        <link rel="icon" type="image/png" href="/images/favicon_io/android-chrome-192x192.png" sizes="192x192">
-        <link rel="icon" type="image/png" href="/images/favicon_io/android-chrome-512x512.png" sizes="512x512">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ysabeau+Infant:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/chat.css">
+    <title>ChatNexus</title>
+    <link rel="icon" type="image/png" href="/images/favicon_io/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="/images/favicon_io/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/images/favicon_io/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="/images/favicon_io/android-chrome-512x512.png" sizes="512x512">
 </head>
 
 <body>
     <div id="main">
         <div id="left">
             <div id="left-header" style="background-color: rgb(59, 59, 109);">
-                <h2 style="color: white;margin-left: 5%;display: inline-block;">My groups</h2>
-                <div class="user-profile" style="">
-                    <span><i class="fa-solid fa-user"></i></span></i> <span><i
+                <div class="profile-dropdown">
+                    <div class="user-profile">
+                        <span><i class="fa-solid fa-user"></i></span></i> <span><i
                                 class="fa-sharp fa-solid fa-caret-down"></i></span>
+                    </div>
+                    <div class="profile-dropdown-content">
+                        <a href="#" class="profile-dropdown-item" onclick="showProfile()">My Profile</a>
+                        <a href="#" class="profile-dropdown-item" onclick="logout()">Logout</a>
+                    </div>
                 </div>
+                <h2 style="color: white;margin-left: 5%;display: inline-block;">My groups</h2>
                 <div id="newgrpbtnc">
                     <button id="newgrpbtn" onclick="$('#overlay1').show();">New group</button>
                 </div>
@@ -45,12 +51,16 @@
             <div id="default" class="flex flex-column"
                 style="width:100%;height:100%;background-color:rgb(193, 203, 212);display:none;">
                 <h1 style="color:rgb(14, 14, 101);">ChatNexus</h1>
-                <p class="bold" style="color: green;"><span><i class="fa-solid fa-lock" style="color: black;"></i></span>&nbsp;&nbsp;All chats are end to end
+                <p class="bold" style="color: green;"><span><i class="fa-solid fa-lock"
+                            style="color: black;"></i></span>&nbsp;&nbsp;All chats are end to end
                     encrypted</p>
                 <h3 class="bold">Join or select a group to chat with others.</h3>
             </div>
-            <div id="group-profile" class="" style="width:100%;height:100%;background-color: rgb(193, 203, 212);display:none;">
-                <h2 id="group-profile-title"><span class="left-nav" style="color: grey;cursor: pointer;padding: 5px;"><i class="fa-solid fa-arrow-left" onclick="backToChatScreen()"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;Group Participants</h2>
+            <div id="group-profile" class=""
+                style="width:100%;height:100%;background-color: rgb(193, 203, 212);display:none;">
+                <h2 id="group-profile-title"><span class="left-nav" style="color: grey;cursor: pointer;padding: 5px;"><i
+                            class="fa-solid fa-arrow-left"
+                            onclick="backToChatScreen()"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;Group Participants</h2>
                 <hr>
                 <input type="search" id="search-users" placeholder=" Search by name or email..." />
                 <div id="participants-list">
@@ -118,23 +128,75 @@
             <button id="add-users-btn" class="btn" onclick="addMembers()">Add</button>
         </div>
     </div>
+    <div id="overlay3" class="overlay">
+        <div id="user-profile-dialog" class="dialog-box bold" style="color:black;">
+            <h3 class="dialog-title">My Profile</h3>
+            <div id="profile-data">
+                <div class="profile-item">
+                    <span>Name:</span>
+                    <span id="profile-username"></span>
+                </div>
+                <div class="profile-item">
+                    <span>Phone No:</span>
+                    <span id="profile-phoneno"></span>
+                </div>
+                <div class="profile-item">
+                    <span>Email:</span>
+                    <span id="profile-email"></span>
+                </div>
+                <button id="close-btn" onclick="closeProfile()">Close</button>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://kit.fontawesome.com/4f9275b3db.js" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="../js/initials.js"></script>
-    <script src="../js/chat.js"></script>
 
     <script>
-
         var socket = io('http://localhost:3000');
 
-        socket.on('new connection', id => {
+        socket.on('connect', () => {
             console.log('CONNECTED');
+            socket.emit('new connection', user);
+        });
+
+        socket.on('new connection', data => {
+            console.log(data.name, ' joined');
         })
 
-        socket.on('new message', function(id, msg) {
+        socket.on('receive message', async (from, msgObj, groupId) => {
+            console.log(from.name + ' => ' + msgObj.message + " in group " + groupId);
 
+            // addToLocalStorage(groupId, msgObj);
+
+            if(currGroup && Number(currGroup.id) === Number(groupId)) {
+                await markMessagesAsSeen(groupId);
+                const newMessage = msgObj.message;
+                displayMessage(msgObj);
+                messagesC.scrollTop = messagesC.scrollHeight;
+                // lastMessageId = newMessage.id;
+            }
+
+            else {
+                showNewMessagesCount(groupId);
+            }
         })
+
+        socket.on('disconnected', (msg) => {
+            console.log(msg);
+        })
+
+        function showNewMessagesCount(groupId) {
+            const newMessageCount = $(`#newMessageCount-${groupId}`);
+            if(newMessageCount.css('display') === 'none') {
+                newMessageCount.text('1');
+                newMessageCount.css('display', 'inline-block');
+            }
+            else {
+                newMessageCount.text(Number(newMessageCount.text())+1);
+            }
+        }
 
         $("#overlay2").click(function (e) {
             if (e.target.id === 'overlay2')
@@ -142,15 +204,11 @@
         })
 
         function toggleDropdown(participantId) {
-            // const dropdown = document.getElementById('dropdown');
-            // dropdown.innerHTML +=  `
-                
-            // `;
-            
+
             const dropdownMenu = document.getElementById(`dropdown-menu-${participantId}`);
 
             dropdownMenu.classList.add('show');
-            
+
             document.addEventListener('click', function (event) {
                 var dropdownMenu = document.getElementById(`dropdown-menu-${participantId}`);
                 var dropdownToggle = document.getElementById(`dropdown-toggle-${participantId}`);
@@ -166,7 +224,20 @@
             $('#active').show();
         }
 
+        function showProfile() {
+            $('#overlay3').show();
+            console.log(user);
+            $('#profile-username').text(user.name);
+            $('#profile-phoneno').text(user.phoneNo);
+            $('#profile-email').text(user.email);
+        }
+
+        function closeProfile() {
+            $('#overlay3').hide();
+        }
+
     </script>
+    <script src="../js/chat.js"></script>
 </body>
 
 </html>
