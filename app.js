@@ -54,16 +54,32 @@ sequelize
     
 const io = new Server(server);
     
+let socketUsersMap = new Map();
+
 io.on('connection', (socket) => {
-    console.log(socket.id, ' user connected');
-  
-    io.emit('new connection', socket.id);
+    // console.log(socket.id, ' user connected');
+
+    socket.on('new connection', (data) => {
+        socketUsersMap.set(socket.id, data.name);
+        io.emit('new connection', data);
+    });
+
+    socket.on('new message', (from, message, groupId) => {
+        try {
+            socket.to(groupId).emit('receive message', from, message, groupId);
+        } catch(err) {
+            console.log('ERROR ', err);
+        }
+    })
   
     socket.on('disconnect', () => {
-      io.emit('disconnected',  `${socket.id} disconnected`);
+        const userName = socketUsersMap.get(socket.id);
+        socketUsersMap.delete(socket.id);
+        io.emit('disconnected',  `${userName} disconnected`);
     });
-  
-    socket.on('new message', (msg) => {
-        socket.broadcast.emit('new message', socket.id, msg);
-    });
+
+    socket.on('join-room', (room, cb) => {
+        socket.join(room);
+        cb(room);
+    })
 });

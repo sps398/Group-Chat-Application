@@ -2,6 +2,7 @@ const User = require('../models/user');
 const Chat = require('../models/chat');
 const Group = require('../models/group');
 const Admin = require('../models/admin');
+const UserMessages = require('../models/user_messages');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sequelize = require('../util/database');
@@ -51,7 +52,7 @@ const loginUser = async (req, res, next) => {
 
         return res.status(200).json({
             message: "User login succesfull!", success: true,
-            token: generateAccessToken({ userId: user.id, name: user.name, email: user.email, isPremium: user.isPremium })
+            token: generateAccessToken({ userId: user.id, name: user.name, email: user.email, phoneNo: user.phoneNo })
         });
 
     } catch (err) {
@@ -74,30 +75,88 @@ const getAllUsers = async (req, res, next) => {
 const postMessage = async (req, res, next) => {
     try {
         const user = req.user;
+        const { groupId } = req.body;
     
         const newMessage = {
             message: req.body.message,
             userId: user.id,
             userName: user.name,
-            groupId: req.query.groupId
+            groupId: groupId
         };
     
         const response = await Chat.create(newMessage);
 
-        return res.status(200).json({ success: true, message: "Message posted successfully", messageId: response.id, userName: user.name });
+        await setMessageStatusAsUnseen(groupId, response.id, req);
+
+        return res.status(200).json({ success: true, message: "Message added successfully", messageObj: response });
     } catch(err) {
         console.log(err);
         return res.status(500).json({ success: false, message: "Something went wrong!" });
     }
-}       
+}
+
+async function setMessageStatusAsUnseen(groupId, messageId, req) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const groups = await Group.findAll({ where: { id: groupId }});
+            const group = groups[0];
+            const membersOfGroup = await group.getUsers();
+            membersOfGroup.forEach(async (member) => {
+                let seen=false;
+                if(member.id === req.user.id)
+                    seen = true;
+
+                const user_messages = await UserMessages.create({
+                    userId: member.id,
+                    messageId: messageId,
+                    groupId: groupId,
+                    seen: seen
+                });
+            })
+            resolve(membersOfGroup);
+        } catch(err) {
+            reject(err);
+        }
+    })
+}
+
+const markMessagesAsSeen = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const groupId = req.body.groupId;
+
+        await UserMessages.update(
+            { seen: true },
+            {
+            where: {
+                groupId: groupId,
+                userId: userId,
+                seen: false
+            }
+            }
+        );
+    
+        return res
+                .status(200)
+                .json({
+                    success: true,
+                    message: "Marked the messages as seen"
+                });
+    } catch(err) {
+        console.log(err);
+        return res
+                .status(500)
+                .json({
+                    success: false,
+                    message: 'Something went wrong!'
+                });
+    }
+  };
 
 const getMessages = async (req, res, next) => {
     try {
-        const lastMessageId = Number(req.query.lastMessageId);
         const groupId = Number(req.query.groupId);
-        if(lastMessageId === -1)
-            return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: [] });    
-        const result = await Chat.findAll({ where: { id : { [Op.gt] : lastMessageId }, groupId: groupId } });
+        let result = await Chat.findAll({ where: { groupId: groupId }});
         return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: result });
     } catch(err) {
         console.log(err);
@@ -105,18 +164,30 @@ const getMessages = async (req, res, next) => {
     }
 }
 
-const getOlderMessages = async (req, res, next) => {
+const getNewMessages = async (req, res) => {
     try {
-        const lastMessageId = Number(req.query.lastMessageId);
-        if(lastMessageId === -1)
-            return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: [] });    
-        const result = await Chat.findAll({ where: { id : { [Op.lt] : lastMessageId } } });
-        return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: result });
+        const newMessages = await UserMessages.findAll({ where: { groupId: req.query.groupId, userId: req.user.id, seen: false } });
+        return res.status(200).json({ success: true, message: 'Retrieved new messages successfully!', newMessages: newMessages });
     } catch(err) {
         console.log(err);
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
     }
 }
+
+// const getOlderMessages = async (req, res, next) => {
+//     try {
+//         const lastMessageId = Number(req.query.lastMessageId);
+//         const groupId = Number(req.query.groupId);
+//         console.log(lastMessageId);
+//         if(lastMessageId === -1)
+//             return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: [] });    
+//         const result = await Chat.findAll({ where: { id : { [Op.lt] : lastMessageId }, groupId: groupId } });
+//         return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: result });
+//     } catch(err) {
+//         console.log(err);
+//         return res.status(500).json({ success: false, message: 'Something went wrong!' });
+//     }
+// }
 
 const createGroup = async (req, res, next) => {
     try {
@@ -244,7 +315,9 @@ module.exports = {
     loginUser,
     postMessage,
     getMessages,
-    getOlderMessages,
+    getNewMessages,
+    // getOlderMessages,
+    markMessagesAsSeen,
     createGroup,
     getAllUsers,
     getGroups,
