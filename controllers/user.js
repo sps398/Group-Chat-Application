@@ -3,9 +3,11 @@ const Chat = require('../models/chat');
 const Group = require('../models/group');
 const Admin = require('../models/admin');
 const UserMessages = require('../models/user_messages');
+const s3Services = require('../services/s3services');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sequelize = require('../util/database');
+const fs = require('fs');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const path = require('path');
@@ -81,12 +83,15 @@ const postMessage = async (req, res, next) => {
             message: req.body.message,
             userId: user.id,
             userName: user.name,
-            groupId: groupId
+            groupId: groupId,
+            messageType: 'text'
         };
     
         const response = await Chat.create(newMessage);
 
         await setMessageStatusAsUnseen(groupId, response.id, req);
+
+        console.log(response);
 
         return res.status(200).json({ success: true, message: "Message added successfully", messageObj: response });
     } catch(err) {
@@ -201,8 +206,6 @@ const createGroup = async (req, res, next) => {
 
         const group = await Group.create(newGroup);
 
-        console.log('GROUP CREATED!');
-
         await Admin.create({
             groupId: group.id,
             adminId: req.user.id
@@ -232,7 +235,7 @@ const getGroups = async (req, res, next) => {
         const groups = await req.user.getGroups();
         return res.status(200).json({ success: true, groups: groups });
     } catch(err) {
-        return res.status(500).json({ message: 'Something went wron!', success: false });
+        return res.status(500).json({ message: 'Something went wrong!', success: false });
     }
 }
 
@@ -241,7 +244,6 @@ const getParticipants = async (req, res, next) => {
         const groupId = req.query.groupId;
         const group = await Group.findOne({ where: { id: groupId } });
         const participants = await group.getUsers({ attributes: ['id', 'name', 'email', 'phoneNo'] });
-        console.log(participants);
 
         return res.status(200).json({ success: true, participants: participants });
     } catch(err) {
@@ -254,7 +256,6 @@ const getGroupAdmins = async (req, res, next) => {
     try {
         const groupId = req.query.groupId;
         const result = await Admin.findAll({ where: { groupId: groupId } });
-        console.log(result);
 
         return res.status(200).json({ success: true, admins: result });
     } catch(err) {
@@ -303,6 +304,38 @@ const removeUserFromGroup = async (req, res, next) => {
     }
 }
 
+const postFile = async (req, res) => {
+    try {
+        const user = req.user;
+        const file = req.file;
+        const groupId = req.body.groupId;
+
+        const fileContent = fs.readFileSync(file.path);
+
+        const s3Response = await s3Services.uploadToS3(fileContent, file.originalname);
+
+        const msg = {
+            fileName: file.originalname,
+            fileUrl: s3Response.Location
+        };
+
+        const messageResponse = await Chat.create({
+            message: JSON.stringify(msg),
+            userId: user.id,
+            userName: user.name,
+            groupId: groupId,
+            messageType: 'file'
+        });
+
+        await setMessageStatusAsUnseen(groupId, messageResponse.id, req);
+
+        return res.status(200).json({ success: true, message: 'File uploaded successfully!', fileObj: messageResponse });
+    } catch(err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}   
+
 const generateAccessToken = function (user) {
     console.log("authenticating..." + process.env.PRIVATE_KEY);
     const token = jwt.sign(user, process.env.PRIVATE_KEY);
@@ -314,6 +347,7 @@ module.exports = {
     registerUser,
     loginUser,
     postMessage,
+    postFile,
     getMessages,
     getNewMessages,
     // getOlderMessages,

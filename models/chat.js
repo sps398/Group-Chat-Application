@@ -15,6 +15,11 @@ const Chat = sequelize.define('chats', {
     userName: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    messageType: {
+        type: Sequelize.STRING,
+        enum: [ 'text', 'file' ],
+        default: 'text'
     }
 });
 
