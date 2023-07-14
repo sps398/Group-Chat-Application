@@ -203,7 +203,9 @@ button {
 #message {
     width: 80%;
     height: 90%;
-    border-radius: 5%;
+    padding: 1rem;
+    border-radius: 2rem;
+    margin-right: 0.5rem;
     border-color: white;
 }
 
@@ -231,8 +233,18 @@ button {
     /* background-color: rgba(155, 144, 144, 0.5); */
 }
 
-#overlay1, #overlay2, #overlay3 {
+#overlay1, #overlay2, #overlay3, #overlay4 {
     display: none;
+}
+
+#overlay4 {
+
+}
+
+#attach-file-dialog {
+  width: 30%;
+  height: 30%;
+  background-color: white;
 }
 
 .dialog-box {
@@ -272,15 +284,22 @@ button {
   padding: 1rem;
 }
 
-#close-btn {
+.overlay4-footer {
   position: absolute;
   bottom: 1rem;
   right: 1rem;
+}
+
+.close-btn, .send-btn {
   background-color: grey;
   color: white;
   padding: 1rem;
   cursor: pointer;
-  border-radius: 20%;
+  border-radius: 1rem;
+}
+
+.send-btn {
+  background-color: blue;
 }
 
 .dialog-title {
@@ -361,6 +380,18 @@ button {
     border-right: 10px solid antiquewhite;
     border-bottom: 10px solid transparent;
 } */
+
+.content {
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.file-download-btn {
+  font-size: 2rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
   
   .message {
     display: inline-block;
@@ -378,6 +409,7 @@ button {
   
   .timestamp {
     font-size: 12px;
+    text-align: center;
     /* color: #888888; */
   }
   

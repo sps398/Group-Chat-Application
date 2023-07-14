@@ -55,7 +55,7 @@ async function syncWithLocalStorage(groupId) {
 
     const newMessageCount = $(`#newMessageCount-${groupId}`);
     const count = newMsgsServer.length;
-    if(count !== 0) {
+    if (count !== 0) {
         newMessageCount.text(`${count}`);
         newMessageCount.css('display', 'inline-block');
     }
@@ -67,7 +67,7 @@ function loadNewMessagesFromServer(groupId) {
             const response = await axiosInstance.get(`/user/new-messages?groupId=${groupId}`, { headers: { "Authorization": token } });
             const messages = response.data.newMessages;
             resolve(messages);
-        } catch(err) {
+        } catch (err) {
             reject(err);
         }
     })
@@ -195,7 +195,7 @@ async function markMessagesAsSeen(groupId) {
         try {
             const response = await axiosInstance.post('/user/messages/markAsSeen', { groupId }, { headers: { "Authorization": token } });
             resolve(response);
-        } catch(err) {
+        } catch (err) {
             reject(err);
         }
     })
@@ -312,12 +312,8 @@ function displayMessages(messages) {
     });
 }
 
-function displayMessage(m) {
-    const createdAt = m.createdAt;
-    const createdAtDate = new Date(createdAt);
-    const time = createdAtDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    messagesC.innerHTML += `
+function getTextView(m, time) {
+    return `
             <div id="chat-container-${m.id}" class="chat-container">
                 <div id="triangle-receiver-${m.id}"></div>
                 <div id="message-${m.id}" class="message">
@@ -328,16 +324,59 @@ function displayMessage(m) {
                 <div id="triangle-sender-${m.id}"></div>
             </div>
         `;
+}
 
-    const msg = document.getElementById(`chat-container-${m.id}`);
+function getFileView(m, time) {
+    console.log(m.id);
+    const msg = m.message;
+    const fileObj = JSON.parse(msg);
+    const fileName = fileObj.fileName;
+    const fileUrl = fileObj.fileUrl;
 
-    if (m.userId === user.userId) {
-        msg.style.justifyContent = 'end';
-        document.getElementById(`message-${m.id}`).style.backgroundColor = '#216666';
-        $(`#triangle-sender-${m.id}`).addClass('triangle-sender');
+    return `
+            <div id="chat-container-${m.id}" class="chat-container">
+                <div id="message-${m.id}" class="message">
+                    <div class="sender">~&nbsp;${m.userName}</div>
+                    <div class="content">
+                        <div class="file-download-btn" onclick="window.location.href = '${fileUrl}';">
+                            <i class="fa-solid fa-file-arrow-down"></i>
+                        </div>
+                        <div class="filename">${fileName}</div>
+                    </div>
+                    <div class="timestamp">${time}</div>
+                </div>
+            </div>
+        `;
+}
+
+function displayMessage(m) {
+    const createdAt = m.createdAt;
+    const createdAtDate = new Date(createdAt);
+    const time = createdAtDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    if (m.messageType === 'text') {
+        messagesC.innerHTML += getTextView(m, time);
+        const msgC = document.getElementById(`chat-container-${m.id}`);
+        if (m.userId === user.userId) {
+            msgC.style.justifyContent = 'end';
+            document.getElementById(`message-${m.id}`).style.backgroundColor = '#216666';
+            $(`#triangle-sender-${m.id}`).addClass('triangle-sender');
+        }
+        else {
+            $(`#triangle-receiver-${m.id}`).addClass('triangle-receiver');
+        }
     }
-    else {
-        $(`#triangle-receiver-${m.id}`).addClass('triangle-receiver');
+    else if (m.messageType === 'file') {
+        messagesC.innerHTML += getFileView(m, time);
+        const msgC2 = $(`#chat-container-${m.id}`);
+        if (m.userId === user.userId) {
+            msgC2.css({
+                'justify-content': 'end'
+            })
+            $(`#message-${m.id}`).css({
+                'background-color': '#216666'
+            })
+        }
     }
 }
 
@@ -374,11 +413,60 @@ sendMessageForm.addEventListener('submit', async (e) => {
     }
 
     // addToLocalStorage(Number(currGroup.id), [ recentMessage ]);
-    
+
     displayMessage(recentMessage);
 
     messagesC.scrollTop = messagesC.scrollHeight;
 })
+
+function takeinput() {
+
+    $('#overlay4').show();
+
+    var cancelButton = document.getElementById('close-btn');
+    cancelButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        $('#overlay4').hide();
+    });
+
+    $('#send-file-form').on('submit', async (e) => {
+        e.preventDefault();
+
+        let recentMessage;
+        try {
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+
+            var formData = new FormData();
+
+            formData.append('file', file);
+            formData.append('groupId', currGroup.id);
+
+            const response = await sendFile(formData);
+            socket.emit('new message', user, response.data.fileObj, Number(currGroup.id));
+            recentMessage = response.data.fileObj;
+
+            closeDialog('#overlay4');
+            displayMessage(recentMessage);
+            messagesC.scrollTop = messagesC.scrollHeight;
+        } catch (err) {
+            console.log(err);
+            alert('Something went wrong!');
+        }
+    })
+}
+
+async function sendFile(formData) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await axiosInstance.post('/user/sendFile', formData, { headers: { "Authorization": token } });
+            resolve(response);
+        } catch (err) {
+            alert(err);
+            reject(err);
+        }
+    })
+}
 
 async function sendMessage(message) {
     return new Promise(async (resolve, reject) => {

@@ -14,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ysabeau+Infant:wght@300&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/attachment.css' rel='stylesheet'>
     <link rel="stylesheet" href="../css/chat.css">
     <title>ChatNexus</title>
     <link rel="icon" type="image/png" href="/images/favicon_io/favicon-16x16.png" sizes="16x16">
@@ -84,6 +85,16 @@
                 </div>
                 <div id="input-message-c" class="flex">
                     <form action="#" id="sendmessage-form" class="flex">
+                        <!-- <div class="attach-file-dropdown">
+                            <button class="attach-file-dropdown-toggle" onclick="toggleDropdown(${participantId})"><i class="fa-solid fa-plus" style="font-size: 1.5rem;color: white;margin-right: 1rem;cursor: pointer;"></i></button>
+                            <ul class="attach-file-dropdown-menu">
+                                <li class="attach-file-dropdown-list-item" onclick="makeAdmin()">Make admin</li>
+                                <li class="attach-file-dropdown-list-item" onclick="removeUserFromGroup()">Remove User</li>
+                            </ul>
+                        </div> -->
+                        <!-- <i class="fa-solid fa-plus" style="font-size: 1.5rem;color: white;margin-right: 1rem;cursor: pointer;" onclick="takeinput()"></i> -->
+                        <!-- <i class="material-icons" style="font-size: 1.5rem;color: white;margin-right: 1rem;cursor: pointer;" onclick="takeinput()"></i> -->
+                        <div style="font-size: 1.5rem;color: white;margin-right: 1rem;cursor: pointer;transform: rotate(90deg);" onclick="takeinput()"><i class="gg-attachment"></i></div>
                         <input type="text" id="message" name="message" placeholder=" Type a message"
                             style="font-size: 17px;">
                         <button id="sendbtn" type="submit">Send</button>
@@ -144,10 +155,23 @@
                     <span>Email:</span>
                     <span id="profile-email"></span>
                 </div>
-                <button id="close-btn" onclick="closeProfile()">Close</button>
+                <button class="close-btn" style="position: absolute;bottom: 1rem;right: 1rem;" onclick="closeDialog('#overlay3')">Close</button>
             </div>
         </div>
     </div>
+    <div id="overlay4" class="overlay">
+        <div id="attach-file-dialog" class="dialog-box bold" style="color:black;">
+            <h3 class="dialog-title">Selected File</h3>
+            <form id="send-file-form" class="flex" action="#" method="POST" enctype="multipart/form-data">
+                <input type="file" id="fileInput" name="file">
+                <div class="overlay4-footer">
+                    <button id="close-btn" class="close-btn" onclick="closeDialog('#overlay4')">Cancel</button>
+                    <button id="send-file-btn" class="send-btn" type="submit">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    `;
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://kit.fontawesome.com/4f9275b3db.js" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -166,13 +190,11 @@
         })
 
         socket.on('receive message', async (from, msgObj, groupId) => {
-            console.log(from.name + ' => ' + msgObj.message + " in group " + groupId);
 
             // addToLocalStorage(groupId, msgObj);
 
             if(currGroup && Number(currGroup.id) === Number(groupId)) {
                 await markMessagesAsSeen(groupId);
-                const newMessage = msgObj.message;
                 displayMessage(msgObj);
                 messagesC.scrollTop = messagesC.scrollHeight;
                 // lastMessageId = newMessage.id;
@@ -232,8 +254,8 @@
             $('#profile-email').text(user.email);
         }
 
-        function closeProfile() {
-            $('#overlay3').hide();
+        function closeDialog(dialog) {
+            $(dialog).hide();
         }
 
     </script>
