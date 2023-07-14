@@ -171,7 +171,12 @@
             </form>
         </div>
     </div>
-    `;
+    <div class="overlay flex" id="overlay-loader">
+        <div id="loader-dialog" class="dialog-box flex flex-column" style="display: flex;align-items: center;justify-content: center;">
+            <div id="'spinner" class="spinner" style="margin-bottom: 1rem;"></div>
+            <div id="file-sender-loader-text" style="text-align: center;">Sending file...</div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://kit.fontawesome.com/4f9275b3db.js" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>

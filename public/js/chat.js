@@ -442,11 +442,25 @@ function takeinput() {
             formData.append('file', file);
             formData.append('groupId', currGroup.id);
 
-            const response = await sendFile(formData);
-            socket.emit('new message', user, response.data.fileObj, Number(currGroup.id));
-            recentMessage = response.data.fileObj;
+            const loader = $('#overlay-loader');
 
             closeDialog('#overlay4');
+            loader.show();
+            $('#spinner').show();
+
+            const response = await sendFile(formData);
+
+            socket.emit('new message', user, response.data.fileObj, Number(currGroup.id));
+
+            $('#spinner').hide();
+            $('#file-sender-loader-text').text('File sent.');
+
+            setTimeout(() => {
+                loader.hide();
+            }, 2000);
+            
+            recentMessage = response.data.fileObj;
+
             displayMessage(recentMessage);
             messagesC.scrollTop = messagesC.scrollHeight;
         } catch (err) {
