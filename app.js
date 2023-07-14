@@ -9,12 +9,14 @@ const cors = require('cors');
 const User = require('./models/user');
 const Group = require('./models/group');
 const Message = require('./models/chat');
+const ArchivedChats = require('./models/archived_chats');
 require('dotenv').config();
 
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const { Sequelize } = require('sequelize');
 
 app.use(bodyParser.json({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -83,3 +85,21 @@ io.on('connection', (socket) => {
         cb(room);
     })
 });
+
+// var CronJob = require('cron').CronJob;
+// var job = new CronJob(
+//     '1 0 12 * * *',
+//     async function() {
+//         console.log('You will see this message when cron runs');
+//         const yesterday = new Date();
+//         yesterday.setDate(yesterday.getDate() - 1);
+//         const chats = await Message.findAll({ where: { createdAt: { [Sequelize.Op.lt]: yesterday } } });
+//         chats.forEach(async chat => {
+//             const { id, ...chatData } = chat.toJSON();
+//             await ArchivedChats.create(chatData);
+//             await Message.destroy({ where: { id } });
+//         })
+//     },
+//     null,
+//     true
+// );
