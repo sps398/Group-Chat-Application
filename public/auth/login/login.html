@@ -12,18 +12,24 @@
     <link rel="icon" type="image/png" href="../../images/favicon_io/favicon-32x32.png" sizes="32x32">
     <link rel="icon" type="image/png" href="../../images/favicon_io/android-chrome-192x192.png" sizes="192x192">
     <link rel="icon" type="image/png" href="../../images/favicon_io/android-chrome-512x512.png" sizes="512x512">
+    <link rel="stylesheet" href="../../css/auth.css">
 </head>
 
 <body>
-    <form action="#" id="login-form">
-        <h3>Login</h3>
-        <label for="email">Email: </label>
-        <input type="email" id="email" name="email" required>
-        <label for="password">Password: </label>
-        <input type="password" id="password" name="password" required>
-        <button type="submit">Submit</button>
-    </form>
-    <h6><a href="../signup/signup.html">New user?Register</a></h6>
+    <div class="container-main">
+        <div class="logo non-selectable">
+            <img src="../../images/bg-logo2.png" alt="Logo">
+        </div>
+        <div class="form-container">
+            <form action="#" id="login-form" class="auth-form" class="">
+                <h3>Login</h3>
+                <input type="email" id="email" name="email" placeholder="Email..." required>
+                <input type="password" id="password" name="password" placeholder="Password..." required>
+                <button type="submit">Submit</button>
+            </form>
+            <h6><a href="../signup/signup.html">New user ? Register</a></h6>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="../../js/initials.js"></script>    
     <script src="../../js/login.js"></script>

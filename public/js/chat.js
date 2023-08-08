@@ -206,10 +206,12 @@ async function showGroupMessages(groupId, groupName) {
     $('#active').show();
     $('#group-profile').hide();
     $(`#newMessageCount-${groupId}`).hide();
+    $('#message').val('');
+    $('#message').focus();
 
     makeCurrGroupElementActive(groupId);
     currGroupId = groupId;
-    // lastMessageId = 0;               
+    // lastMessageId = 0;
 
     const group = {
         id: groupId,
@@ -223,7 +225,7 @@ async function showGroupMessages(groupId, groupName) {
         <div style="display:inline-block;width:5%;height:70%;position:absolute;top:15%;left:1.5%">
             <img class="group-profile-image" src="../images/group-profile-image.jpeg" alt="Group Profile Pic">
         </div>
-        <h2 style="position:absolute;top:0%;left:10%;color:black;">${group.name}</h2>
+        <h2 style="position:absolute;top:0%;left:10%;color:white;">${group.name}</h2>
     `;
 
     rightHeader.onclick = function () {
@@ -242,18 +244,19 @@ async function showGroupMessages(groupId, groupName) {
 
     messagesC.innerHTML = '';
 
-    // messagesC.innerHTML = `
-    //     <div id="oldermessagesbtnc" style="margin: 10px 0;display:flex;justify-content:center;align-items:center;"><button id="load-older-messages" onclick=loadOlderMessages('${currGroup.id}'); style="padding: 5px;cursor: pointer;background-color:#6294c0;color:white;">Load older...</button></div>`;
+    messagesC.innerHTML = `
+        <div id="oldermessagesbtnc" style="margin: 10px 0;display:flex;justify-content:center;align-items:center;"><button id="load-older-messages" onclick=loadOlderMessages('${currGroup.id}'); style="padding: 5px;cursor: pointer;background-color:#6294c0;color:white;">Load older...</button></div>`;
 
     // messages = loadMessagesFromLocalStorage(currGroup, 0);
 
     displayMessages(messages);
-    // if (messages.length !== 0)
-    //     lastMessageId = messages[messages.length - 1].id;
-    // else {
-    //     document.getElementById('oldermessagesbtnc').remove();
+    if (messages.length !== 0) {
+        // lastMessageId = messages[messages.length - 1].id;
+    }
+    else {
+        document.getElementById('oldermessagesbtnc').remove();
     //     lastMessageId=0;
-    // }
+    }
 
     messagesC.scrollTop = messagesC.scrollHeight;
 }
@@ -288,20 +291,21 @@ function makeCurrGroupElementActive(groupId) {
         currGroupElement.classList.add('active');
 }
 
-// async function loadOlderMessages(groupId) {
-//     try {
-//         let recentChats = JSON.parse(localStorage.getItem('recent_chats'));
-//         recentChats = new Map(recentChats);
-//         const groupMessages = recentChats.get(Number(groupId));
-//         const result = await axiosInstance.get(`/user/olderMessages?groupId=${groupId}&lastMessageId=${groupMessages[0].id}`, { headers: { "Authorization": token } });
-//         messages = result.data.messages;
-//         if (messages)
-//             displayOlderMessages(messages);
-//     } catch (err) {
-//         console.log(err);
-//         alert('Something went wrong!');
-//     }
-// }
+async function loadOlderMessages(groupId) {
+    try {
+        // let recentChats = JSON.parse(localStorage.getItem('recent_chats'));
+        // recentChats = new Map(recentChats);
+        // const groupMessages = recentChats.get(Number(groupId));
+        // const result = await axiosInstance.get(`/user/olderMessages?groupId=${groupId}&lastMessageId=${groupMessages[0].id}`, { headers: { "Authorization": token } });
+        const result = await axiosInstance.get(`/user/olderMessages?groupId=${groupId}`, { headers: { "Authorization": token } });
+        messages = result.data.messages;
+        if (messages)
+            displayOlderMessages(messages);
+    } catch (err) {
+        console.log(err);
+        alert('Something went wrong!');
+    }
+}
 
 function displayMessages(messages) {
     if (!messages || messages.length === 0)
@@ -380,17 +384,17 @@ function displayMessage(m) {
     }
 }
 
-// function displayOlderMessages(messages) {
-//     const currHeight = messagesC.scrollHeight;
-//     document.getElementById('oldermessagesbtnc').remove();
-//     const temp = messagesC.innerHTML;
-//     messagesC.innerHTML='';
-//     messages.forEach(m => {
-//         displayMessage(m);
-//     })
-//     messagesC.innerHTML += temp;
-//     messagesC.scrollTop = messagesC.scrollHeight - currHeight;
-// }
+function displayOlderMessages(messages) {
+    const currHeight = messagesC.scrollHeight;
+    document.getElementById('oldermessagesbtnc').remove();
+    const temp = messagesC.innerHTML;
+    messagesC.innerHTML='';
+    messages.forEach(m => {
+        displayMessage(m);
+    })
+    messagesC.innerHTML += temp;
+    messagesC.scrollTop = messagesC.scrollHeight - currHeight;
+}
 
 sendMessageForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -442,11 +446,24 @@ function takeinput() {
             formData.append('file', file);
             formData.append('groupId', currGroup.id);
 
-            const response = await sendFile(formData);
-            socket.emit('new message', user, response.data.fileObj, Number(currGroup.id));
-            recentMessage = response.data.fileObj;
+            const loader = $('#overlay-loader');
 
             closeDialog('#overlay4');
+            loader.show();
+
+            const response = await sendFile(formData);
+
+            socket.emit('new message', user, response.data.fileObj, Number(currGroup.id));
+
+            $('#spinner').css('display', 'none');
+            $('#file-sender-loader-text').text('File sent.');
+
+            setTimeout(() => {
+                loader.hide();
+            }, 2000);
+            
+            recentMessage = response.data.fileObj;
+
             displayMessage(recentMessage);
             messagesC.scrollTop = messagesC.scrollHeight;
         } catch (err) {
@@ -545,8 +562,6 @@ async function showUsersDialog() {
     }
 
     users = response.data.users;
-
-    console.log(users);
 
     const userList = document.getElementById('user-list');
     userList.innerHTML = '';

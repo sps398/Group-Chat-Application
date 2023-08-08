@@ -21,7 +21,7 @@ router.post('/messages/markAsSeen', userAuthentication.authenticate, userControl
     
 router.get('/new-messages', userAuthentication.authenticate, userController.getNewMessages);
 
-// router.get('/olderMessages', userAuthentication.authenticate, userController.getOlderMessages);
+router.get('/olderMessages', userAuthentication.authenticate, userController.getOlderMessages);
 
 router.post('/createGroup', userAuthentication.authenticate, userController.createGroup);
 

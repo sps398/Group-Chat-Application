@@ -52,7 +52,8 @@ button {
 }
 
 #newgrpbtn {
-    background-color: rgb(28, 85, 135);
+    /* background-color: rgb(28, 85, 135); */
+    background-color: #2A3942;
     padding: 5px;
     color: white;
     cursor: pointer;
@@ -62,7 +63,13 @@ button {
     display: flex;
     /* padding: 5vh 5vw; */
     padding-top: 2vh;
-    background-color: rgb(193, 203, 212);
+    /* background-color: rgb(193, 203, 212); */
+    background-color: #111B21;
+}
+
+#left {
+  /* border-right: 1px solid rgb(158, 196, 222); */
+  /* border-right: 1px solid #ba844e; */
 }
 
 #left-header, #right-header {
@@ -71,19 +78,21 @@ button {
     height: 10%;
     position: absolute;
     top: 0;
+    color: white;
     /* background-color: #202C33; */
 }
 
 #right-header {
   /* background-color: rgb(176, 176, 222); */
   /* background-color: rgb(90, 149, 201); */
-  background-color: rgb(157, 192, 223);
+  background-color: #202C33;
   color: white;
   cursor: pointer;
 }
 
 #right-header:hover {
-  background-color: rgb(116, 181, 235);
+  /* background-color: rgb(116, 181, 235); */
+  background-color: #2A3942;
 }
 
 #left {
@@ -93,7 +102,8 @@ button {
     overflow-y: auto;
     position: fixed;
     left: 0;
-    background-color: azure;
+    /* background-color: azure; */
+    background-color: #111B21;
 }
 
 #groups-c {
@@ -104,13 +114,14 @@ button {
 
 .group-element {
     width: 100%;
-    background-color: rgb(111 152 189);
+    background-color: #111B21;
+    color: white;
     position: relative;
     padding: 10px;
     padding-left: 30px;
     /* text-align: center; */
-    border-bottom: 1px solid white;
     cursor: pointer;
+    border-bottom: 1px solid #202C33;
 }
 
 .group-name-c {
@@ -118,13 +129,14 @@ button {
   position: absolute;
   top: 2px;
   display: inline-block;
+  /* border-bottom: 1px solid #202C33; */
 }
 
 .group-element:hover {
     /* background-color: rgb(157 190 220); */
     /* background-color: rgb(193, 205, 216); */
     /* background-color: rgb(180 210 230); */
-    background-color: rgb(157 190 220);
+    background-color: #202C33;
     /* opacity: 0.8; */
 }
 
@@ -181,7 +193,11 @@ button {
     overflow-y: auto;
     position: absolute;
     top: 10%;
-    background-color: #e9e4df;
+    /* background-color: #e9e4df; */
+    background-image: url('../images/chat_bg2.jpg');
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: center center;
 }
 
 #input-message-c {
@@ -190,9 +206,14 @@ button {
     height: 10%;
     position: absolute;
     bottom: 0;
-    background-color: rgb(12, 63, 107);
+    /* background-color: rgb(12, 63, 107); */
+    background-color: #202C33;
     /* border-top-left-radius: 5%;
     border-top-right-radius: 5%; */
+}
+
+#input-message-c > input {
+  background-color: #2A3942;
 }
 
 #sendmessage-form {
@@ -204,9 +225,11 @@ button {
     width: 80%;
     height: 90%;
     padding: 1rem;
-    border-radius: 2rem;
+    border: none;
+    border-radius: 1rem;
+    border-color: #2A3942;
     margin-right: 0.5rem;
-    border-color: white;
+    background-color: #2A3942;
 }
 
 #message:focus {
@@ -218,8 +241,17 @@ button {
     height: 90%;
     margin-left: 2px;
     cursor: pointer;
-    background-color: rgb(28, 85, 135);
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: black;
+}
+
+#senbtn img {
+  width: 30px;
+  height: 30px;
+  align-self: flex-start;
 }
 
 .overlay {
@@ -233,7 +265,7 @@ button {
     /* background-color: rgba(155, 144, 144, 0.5); */
 }
 
-#overlay1, #overlay2, #overlay3, #overlay4 {
+#overlay1, #overlay2, #overlay3, #overlay4, #overlay-loader {
     display: none;
 }
 
@@ -253,10 +285,29 @@ button {
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
+.spinner {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#loader-dialog {
+  padding: 3rem;
+  background-color: white;
+}
+
 #add-group-dialog {
-    padding: 5rem;
-    padding-top: 0;
-    background-color: white;
+  padding: 5rem;
+  padding-top: 0;
+  background-color: white;
 }
 
 #add-users-dialog {
@@ -295,7 +346,8 @@ button {
 }
 
 .send-btn {
-  background-color: blue;
+  /* background-color: blue; */
+  background-color: #7C8C95;
 }
 
 .dialog-title {
@@ -416,7 +468,10 @@ button {
 
   .active {
     /* background-color: rgb(157 190 220); */
-    background-color: rgb(158, 196, 222);
+    /* background-color: rgb(158, 196, 222); */
+    /* background-color: #E9E4DF; */
+    /* background-color: #729fd6; */
+    background-color: #2A3942;
   }
 
   #group-profile-title {
@@ -444,7 +499,8 @@ button {
     padding: 10px;
     color: white;
     display: inline-block;
-    background-color: rgb(44, 83, 117);
+    /* background-color: rgb(44, 83, 117); */
+    background-color: #2A3942;
     border-radius: 10px;
   }
 
@@ -472,7 +528,7 @@ button {
     right: 1%;
     top: 15%;
     display: inline-block;
-    background-color: rgb(44, 83, 117);
+    background-color: #2A3942;
   }
   
   .dropdown-toggle {
@@ -480,7 +536,7 @@ button {
     /* background-color: #eee; */
     border: none;
     cursor: pointer;
-    background-color: rgb(44, 83, 117);
+    background-color: #2A3942;
   }
   
   .dropdown-menu {
@@ -531,7 +587,7 @@ button {
   }
 
   .left-nav:hover {
-    background-color: rgb(152, 175, 196);
+    background-color: #2A3942;
     border-radius: 5px;
     color: white;
   }

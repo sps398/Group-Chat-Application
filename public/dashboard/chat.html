@@ -22,11 +22,10 @@
     <link rel="icon" type="image/png" href="/images/favicon_io/android-chrome-192x192.png" sizes="192x192">
     <link rel="icon" type="image/png" href="/images/favicon_io/android-chrome-512x512.png" sizes="512x512">
 </head>
-
 <body>
     <div id="main">
         <div id="left">
-            <div id="left-header" style="background-color: rgb(59, 59, 109);">
+            <div id="left-header" style="background-color: #202C33">
                 <div class="profile-dropdown">
                     <div class="user-profile">
                         <span><i class="fa-solid fa-user"></i></span></i> <span><i
@@ -50,15 +49,14 @@
         </div>
         <div id="right">
             <div id="default" class="flex flex-column"
-                style="width:100%;height:100%;background-color:rgb(193, 203, 212);display:none;">
-                <h1 style="color:rgb(14, 14, 101);">ChatNexus</h1>
-                <p class="bold" style="color: green;"><span><i class="fa-solid fa-lock"
-                            style="color: black;"></i></span>&nbsp;&nbsp;All chats are end to end
+                style="width:100%;height:100%;background-color:#222E35;color:white;display:none;">
+                <h1 style="color:white;">ChatNexus</h1>
+                <p class="bold"><span><i class="fa-solid fa-lock"></i></span>&nbsp;&nbsp;All chats are end to end
                     encrypted</p>
                 <h3 class="bold">Join or select a group to chat with others.</h3>
             </div>
-            <div id="group-profile" class=""
-                style="width:100%;height:100%;background-color: rgb(193, 203, 212);display:none;">
+            <div id="group-profile"
+                style="width:100%;height:100%;background-color: #202C33;color:white;display:none;">
                 <h2 id="group-profile-title"><span class="left-nav" style="color: grey;cursor: pointer;padding: 5px;"><i
                             class="fa-solid fa-arrow-left"
                             onclick="backToChatScreen()"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;Group Participants</h2>
@@ -97,7 +95,7 @@
                         <div style="font-size: 1.5rem;color: white;margin-right: 1rem;cursor: pointer;transform: rotate(90deg);" onclick="takeinput()"><i class="gg-attachment"></i></div>
                         <input type="text" id="message" name="message" placeholder=" Type a message"
                             style="font-size: 17px;">
-                        <button id="sendbtn" type="submit">Send</button>
+                        <button id="sendbtn" type="submit"><img src="../images/send-button.png" alt=""></button>
                     </form>
                 </div>
             </div>
@@ -171,7 +169,12 @@
             </form>
         </div>
     </div>
-    `;
+    <div class="overlay flex" id="overlay-loader">
+        <div id="loader-dialog" class="dialog-box flex flex-column" style="display: flex;align-items: center;justify-content: center;">
+            <div id="'spinner" class="spinner" style="margin-bottom: 1rem;"></div>
+            <div id="file-sender-loader-text" style="text-align: center;">Sending file...</div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://kit.fontawesome.com/4f9275b3db.js" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>

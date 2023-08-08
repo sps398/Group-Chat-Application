@@ -9,7 +9,7 @@ const cors = require('cors');
 const User = require('./models/user');
 const Group = require('./models/group');
 const Message = require('./models/chat');
-const ArchivedChats = require('./models/archived_chats');
+const ArchivedMessages = require('./models/archived_chats');
 require('dotenv').config();
 
 const app = express();
@@ -41,6 +41,9 @@ Group.belongsToMany(User, { through: 'user_group' });
 
 Group.hasMany(Message);
 Message.belongsTo(Group);
+
+Group.hasMany(ArchivedMessages);
+ArchivedMessages.belongsTo(Group);
 
 sequelize
     .sync()
@@ -88,7 +91,7 @@ io.on('connection', (socket) => {
 
 // var CronJob = require('cron').CronJob;
 // var job = new CronJob(
-//     '1 0 12 * * *',
+//     '50 18 1 * * *',
 //     async function() {
 //         console.log('You will see this message when cron runs');
 //         const yesterday = new Date();
@@ -96,7 +99,7 @@ io.on('connection', (socket) => {
 //         const chats = await Message.findAll({ where: { createdAt: { [Sequelize.Op.lt]: yesterday } } });
 //         chats.forEach(async chat => {
 //             const { id, ...chatData } = chat.toJSON();
-//             await ArchivedChats.create(chatData);
+//             await ArchivedMessages.create(chatData);
 //             await Message.destroy({ where: { id } });
 //         })
 //     },
