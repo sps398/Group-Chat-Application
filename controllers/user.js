@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Chat = require('../models/chat');
+const ArchivedChats = require('../models/archived_chats');
 const Group = require('../models/group');
 const Admin = require('../models/admin');
 const UserMessages = require('../models/user_messages');
@@ -179,20 +180,20 @@ const getNewMessages = async (req, res) => {
     }
 }
 
-// const getOlderMessages = async (req, res, next) => {
-//     try {
-//         const lastMessageId = Number(req.query.lastMessageId);
-//         const groupId = Number(req.query.groupId);
-//         console.log(lastMessageId);
-//         if(lastMessageId === -1)
-//             return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: [] });    
-//         const result = await Chat.findAll({ where: { id : { [Op.lt] : lastMessageId }, groupId: groupId } });
-//         return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: result });
-//     } catch(err) {
-//         console.log(err);
-//         return res.status(500).json({ success: false, message: 'Something went wrong!' });
-//     }
-// }
+const getOlderMessages = async (req, res, next) => {
+    try {
+        // const lastMessageId = Number(req.query.lastMessageId);
+        const groupId = Number(req.query.groupId);
+        // if(lastMessageId === -1)
+        //     return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: [] });    
+        // const result = await ArchivedChats.findAll({ where: { id : { [Op.lt] : lastMessageId }, groupId: groupId } });
+        const result = await ArchivedChats.findAll({ where: { groupId: groupId } });
+        return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: result });
+    } catch(err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
 
 const createGroup = async (req, res, next) => {
     try {
@@ -334,7 +335,7 @@ const postFile = async (req, res) => {
         console.log(err);
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
     }
-}   
+}
 
 const generateAccessToken = function (user) {
     console.log("authenticating..." + process.env.PRIVATE_KEY);
@@ -350,7 +351,7 @@ module.exports = {
     postFile,
     getMessages,
     getNewMessages,
-    // getOlderMessages,
+    getOlderMessages,
     markMessagesAsSeen,
     createGroup,
     getAllUsers,
