@@ -21,7 +21,9 @@
     <link rel="icon" type="image/png" href="/images/favicon_io/favicon-32x32.png" sizes="32x32">
     <link rel="icon" type="image/png" href="/images/favicon_io/android-chrome-192x192.png" sizes="192x192">
     <link rel="icon" type="image/png" href="/images/favicon_io/android-chrome-512x512.png" sizes="512x512">
+    <link rel="stylesheet" href="https://unpkg.com/emoji-mart@3.0.0/css/emoji-mart.css" />
 </head>
+
 <body>
     <div id="main">
         <div id="left">
@@ -55,8 +57,7 @@
                     encrypted</p>
                 <h3 class="bold">Join or select a group to chat with others.</h3>
             </div>
-            <div id="group-profile"
-                style="width:100%;height:100%;background-color: #202C33;color:white;display:none;">
+            <div id="group-profile" style="width:100%;height:100%;background-color: #202C33;color:white;display:none;">
                 <h2 id="group-profile-title"><span class="left-nav" style="color: grey;cursor: pointer;padding: 5px;"><i
                             class="fa-solid fa-arrow-left"
                             onclick="backToChatScreen()"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;Group Participants</h2>
@@ -83,16 +84,13 @@
                 </div>
                 <div id="input-message-c" class="flex">
                     <form action="#" id="sendmessage-form" class="flex">
-                        <!-- <div class="attach-file-dropdown">
-                            <button class="attach-file-dropdown-toggle" onclick="toggleDropdown(${participantId})"><i class="fa-solid fa-plus" style="font-size: 1.5rem;color: white;margin-right: 1rem;cursor: pointer;"></i></button>
-                            <ul class="attach-file-dropdown-menu">
-                                <li class="attach-file-dropdown-list-item" onclick="makeAdmin()">Make admin</li>
-                                <li class="attach-file-dropdown-list-item" onclick="removeUserFromGroup()">Remove User</li>
-                            </ul>
-                        </div> -->
-                        <!-- <i class="fa-solid fa-plus" style="font-size: 1.5rem;color: white;margin-right: 1rem;cursor: pointer;" onclick="takeinput()"></i> -->
-                        <!-- <i class="material-icons" style="font-size: 1.5rem;color: white;margin-right: 1rem;cursor: pointer;" onclick="takeinput()"></i> -->
-                        <div style="font-size: 1.5rem;color: white;margin-right: 1rem;cursor: pointer;transform: rotate(90deg);" onclick="takeinput()"><i class="gg-attachment"></i></div>
+                        <div id="emojiPickerBtn" class="flex"
+                            style="width: 5%;font-size: 1.5rem;color: white;cursor: pointer;margin-right: -1rem;"><i
+                                class="fa-regular fa-face-smile"></i></div>
+                        <div class="flex"
+                            style="width: 5%;font-size: 1.5rem;color: white;cursor: pointer;transform: rotate(30deg);"
+                            onclick="takeinput()"><i class="gg-attachment"></i></div>
+                        <div id="emojiPicker" style="display: none;"></div>
                         <input type="text" id="message" name="message" placeholder=" Type a message"
                             style="font-size: 17px;">
                         <button id="sendbtn" type="submit"><img src="../images/send-button.png" alt=""></button>
@@ -153,7 +151,8 @@
                     <span>Email:</span>
                     <span id="profile-email"></span>
                 </div>
-                <button class="close-btn" style="position: absolute;bottom: 1rem;right: 1rem;" onclick="closeDialog('#overlay3')">Close</button>
+                <button class="close-btn" style="position: absolute;bottom: 1rem;right: 1rem;"
+                    onclick="closeDialog('#overlay3')">Close</button>
             </div>
         </div>
     </div>
@@ -170,11 +169,13 @@
         </div>
     </div>
     <div class="overlay flex" id="overlay-loader">
-        <div id="loader-dialog" class="dialog-box flex flex-column" style="display: flex;align-items: center;justify-content: center;">
+        <div id="loader-dialog" class="dialog-box flex flex-column"
+            style="display: flex;align-items: center;justify-content: center;">
             <div id="'spinner" class="spinner" style="margin-bottom: 1rem;"></div>
             <div id="file-sender-loader-text" style="text-align: center;">Sending file...</div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://kit.fontawesome.com/4f9275b3db.js" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -196,7 +197,7 @@
 
             // addToLocalStorage(groupId, msgObj);
 
-            if(currGroup && Number(currGroup.id) === Number(groupId)) {
+            if (currGroup && Number(currGroup.id) === Number(groupId)) {
                 await markMessagesAsSeen(groupId);
                 displayMessage(msgObj);
                 messagesC.scrollTop = messagesC.scrollHeight;
@@ -214,12 +215,12 @@
 
         function showNewMessagesCount(groupId) {
             const newMessageCount = $(`#newMessageCount-${groupId}`);
-            if(newMessageCount.css('display') === 'none') {
+            if (newMessageCount.css('display') === 'none') {
                 newMessageCount.text('1');
                 newMessageCount.css('display', 'inline-block');
             }
             else {
-                newMessageCount.text(Number(newMessageCount.text())+1);
+                newMessageCount.text(Number(newMessageCount.text()) + 1);
             }
         }
 
@@ -227,6 +228,23 @@
             if (e.target.id === 'overlay2')
                 $("#overlay2").hide();
         })
+
+        const pickerOptions = { onEmojiSelect: console.log }
+        const picker = new EmojiMart.Picker(pickerOptions)
+        const emojiPickerBtn = document.getElementById('emojiPickerBtn');
+        const emojiPicker = document.getElementById('emojiPicker');
+        emojiPicker.appendChild(picker);
+
+        document.getElementById('emojiPickerBtn').addEventListener('click', () => {
+            emojiPicker.style.display = emojiPicker.style.display === "none" ? "block" : "none";
+            event.stopPropagation();
+        })
+
+        document.addEventListener("click", (event) => {
+            if (!emojiPicker.contains(event.target) && event.target !== emojiPickerBtn) {
+                emojiPicker.style.display = "none";
+            }
+        });
 
         function toggleDropdown(participantId) {
 

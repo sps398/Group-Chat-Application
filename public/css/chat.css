@@ -68,7 +68,7 @@ button {
 }
 
 #left {
-  /* border-right: 1px solid rgb(158, 196, 222); */
+  border-right: 1px solid #2d3b43;
   /* border-right: 1px solid #ba844e; */
 }
 
@@ -114,6 +114,7 @@ button {
 
 .group-element {
     width: 100%;
+    margin: auto;
     background-color: #111B21;
     color: white;
     position: relative;
@@ -186,6 +187,12 @@ button {
     right: 0;
 }
 
+#emojiPicker {
+  position: absolute;
+  bottom: 10vh;
+  right: 45vw;
+}
+
 #messagesc {
     /* border: 2px solid violet; */
     width: 100%;
@@ -222,7 +229,7 @@ button {
 }
 
 #message {
-    width: 80%;
+    width: 85%;
     height: 90%;
     padding: 1rem;
     border: none;
@@ -230,6 +237,7 @@ button {
     border-color: #2A3942;
     margin-right: 0.5rem;
     background-color: #2A3942;
+    color: white;
 }
 
 #message:focus {
@@ -237,7 +245,7 @@ button {
 }
 
 #sendbtn {
-    width: 10%;
+    width: 5%;
     height: 90%;
     margin-left: 2px;
     cursor: pointer;
@@ -481,7 +489,10 @@ button {
   }
 
   #group-profile > hr {
-    border: 3px solid black;
+    width: 99%;
+    border: none;
+    height: 1px;
+    background-color: #2d3b43;
   }
 
   #participants-list {
@@ -578,8 +589,12 @@ button {
     margin-top: 20px;
     width: 40%;
     height: 2rem;
+    padding: 0.5rem;
     border: none;
-    border-radius: 10px;
+    border-radius: 1rem;
+    border-color: #2A3942;
+    background-color: #2A3942;
+    color: white;
   }
 
   #search-users:focus {

@@ -338,9 +338,7 @@ const postFile = async (req, res) => {
 }
 
 const generateAccessToken = function (user) {
-    console.log("authenticating..." + process.env.PRIVATE_KEY);
     const token = jwt.sign(user, process.env.PRIVATE_KEY);
-    console.log(token);
     return token;
 }
 

@@ -46,7 +46,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         $('#active').hide();
         $('#group-profile').hide();
     } catch (err) {
-        console.log(err);
+        alert('Oops! Something went wrong.');
     }
 })
 
@@ -321,7 +321,7 @@ function getTextView(m, time) {
             <div id="chat-container-${m.id}" class="chat-container">
                 <div id="triangle-receiver-${m.id}"></div>
                 <div id="message-${m.id}" class="message">
-                    <div class="sender">~&nbsp;${m.userName}</div>
+                    <div id="sender-${m.id}" class="sender">~&nbsp;${m.userName}</div>
                     <div class="text">${m.message}</div>
                     <div class="timestamp">${time}</div>
                 </div>
@@ -340,7 +340,7 @@ function getFileView(m, time) {
     return `
             <div id="chat-container-${m.id}" class="chat-container">
                 <div id="message-${m.id}" class="message">
-                    <div class="sender">~&nbsp;${m.userName}</div>
+                    <div id="sender-${m.id}" class="sender">~&nbsp;${m.userName}</div>
                     <div class="content">
                         <div class="file-download-btn" onclick="window.location.href = '${fileUrl}';">
                             <i class="fa-solid fa-file-arrow-down"></i>
@@ -361,8 +361,10 @@ function displayMessage(m) {
     if (m.messageType === 'text') {
         messagesC.innerHTML += getTextView(m, time);
         const msgC = document.getElementById(`chat-container-${m.id}`);
+        console.log(m.id, m.userId, user.userId);
         if (m.userId === user.userId) {
             msgC.style.justifyContent = 'end';
+            document.getElementById(`sender-${m.id}`).style.display = 'none';
             document.getElementById(`message-${m.id}`).style.backgroundColor = '#216666';
             $(`#triangle-sender-${m.id}`).addClass('triangle-sender');
         }
@@ -372,14 +374,12 @@ function displayMessage(m) {
     }
     else if (m.messageType === 'file') {
         messagesC.innerHTML += getFileView(m, time);
-        const msgC2 = $(`#chat-container-${m.id}`);
+        const msgC2 = document.getElementById(`chat-container-${m.id}`);
+        console.log(m);
         if (m.userId === user.userId) {
-            msgC2.css({
-                'justify-content': 'end'
-            })
-            $(`#message-${m.id}`).css({
-                'background-color': '#216666'
-            })
+            document.getElementById(`sender-${m.id}`).style.display = 'none';
+            msgC2.style.justifyContent = 'end';
+            document.getElementById(`message-${m.id}`).style.backgroundColor = '#216666';
         }
     }
 }

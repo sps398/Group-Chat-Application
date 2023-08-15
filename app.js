@@ -42,6 +42,9 @@ Group.belongsToMany(User, { through: 'user_group' });
 Group.hasMany(Message);
 Message.belongsTo(Group);
 
+User.hasMany(ArchivedMessages);
+ArchivedMessages.belongsTo(User);
+
 Group.hasMany(ArchivedMessages);
 ArchivedMessages.belongsTo(Group);
 
