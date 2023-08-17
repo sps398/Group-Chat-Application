@@ -10,6 +10,7 @@ const User = require('./models/user');
 const Group = require('./models/group');
 const Message = require('./models/chat');
 const ArchivedMessages = require('./models/archived_chats');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -28,9 +29,27 @@ app.get('/', (req, res) => {
     res.redirect('/dashboard/chat.html');
 })
 
+app.use((req, res, next) => {
+    const filePath = path.join(__dirname, `public/${req.url}`);
+    if(!fs.existsSync(filePath))
+        next();
+    else
+        res.status(200).sendFile(filePath);
+});
+
 app.use((req, res) => {
-    console.log(req.url);
-    res.sendFile(path.join(__dirname, `public/${req.url}`));
+    const filePath = path.join(__dirname, 'public', 'error', 'errorpage.html');
+    
+    if (fs.existsSync(filePath)) {
+        res.status(404).sendFile(filePath, (err) => {
+            if (err) {
+                console.error('Error sending file:', err);
+                res.status(500).send('Error sending file');
+            }
+        });
+    } else {
+        res.status(404).send('Page not found');
+    }
 });
 
 User.hasMany(Message);
