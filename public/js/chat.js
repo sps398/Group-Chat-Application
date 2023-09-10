@@ -11,6 +11,22 @@ if (!token) {
     window.location.href = '../auth/login/login.html';
 }
 
+const main = document.getElementById('main');
+const left = document.getElementById('left');
+const right = document.getElementById('right');
+
+
+function handleResize() {
+    const totalWidth = left.offsetWidth + right.offsetWidth;
+    main.style.width = `${totalWidth}px`;
+    
+    console.log("Total width: " + totalWidth);  
+  }
+  
+  window.addEventListener('resize', handleResize);
+  
+  handleResize();
+
 window.addEventListener('DOMContentLoaded', async () => {
     try {
         const response = await axiosInstance.get('/user/groups', { headers: { "Authorization": token } });

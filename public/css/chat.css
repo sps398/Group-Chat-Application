@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 0;
     /* padding-top: 1%; */
-    overflow: hidden;
+    /* overflow: hidden; */
     /* background-color: rgb(193, 203, 212); */
     /* font-family: 'Belanosima', sans-serif; */
     font-family: 'Ysabeau Infant', sans-serif;
@@ -60,16 +60,10 @@ button {
 }
 
 #main {
-    display: flex;
-    /* padding: 5vh 5vw; */
+    width: auto;
     padding-top: 2vh;
-    /* background-color: rgb(193, 203, 212); */
     background-color: #111B21;
-}
-
-#left {
-  border-right: 1px solid #2d3b43;
-  /* border-right: 1px solid #ba844e; */
+    overflow-x: auto;
 }
 
 #left-header, #right-header {
@@ -96,14 +90,13 @@ button {
 }
 
 #left {
-    /* border: 2px solid red; */
-    width: 30vw;
-    height: 98vh;
-    overflow-y: auto;
-    position: fixed;
-    left: 0;
-    /* background-color: azure; */
-    background-color: #111B21;
+  width: 30vw;
+  height: 98vh;
+  position: fixed;
+  left: 0;
+  overflow-y: auto;
+  background-color: #111B21;
+  border-right: 1px solid #2d3b43;
 }
 
 #groups-c {
@@ -161,7 +154,7 @@ button {
   right: 20px;
   padding: 0.2rem 0.5rem;
   border-radius: 50%;
-  background-color: blue;
+  background-color: red;
   color: white;
   font-weight: bold;
   animation: popUpAnimation 0.3s ease-out forwards;
@@ -179,12 +172,11 @@ button {
 }
 
 #right {
-    /* border: 2px solid green; */
-    width: 70vw;
-    height: 98vh;
-    margin-left: 5%;
-    position: fixed;
-    right: 0;
+  width: 70vw;
+  height: 98vh;
+  margin-left: 5%;
+  position: fixed;
+  right: 0;
 }
 
 #emojiPicker {
@@ -208,7 +200,6 @@ button {
 }
 
 #input-message-c {
-    /* border: 2px solid blue; */
     width: 100%;
     height: 10%;
     position: absolute;
@@ -353,6 +344,11 @@ button {
   border-radius: 1rem;
 }
 
+#active {
+  width: 100%;
+  height: 100%;
+}
+
 .send-btn {
   /* background-color: blue; */
   background-color: #7C8C95;
@@ -475,10 +471,6 @@ button {
   }
 
   .active {
-    /* background-color: rgb(157 190 220); */
-    /* background-color: rgb(158, 196, 222); */
-    /* background-color: #E9E4DF; */
-    /* background-color: #729fd6; */
     background-color: #2A3942;
   }
 
@@ -670,4 +662,23 @@ button {
     border-radius: 10%;
     position: relative;
     right: -0.2rem;
+  }
+
+  @media screen and (max-width: 1000px) {
+    #left {
+      width: 400px;
+      position: absolute;
+      left: 0;
+    }
+
+    #right {
+      width: 800px;
+      position: absolute;
+      left: 400px;
+      margin: 0;
+    }
+
+    #emojiPicker {
+      left: 10px;
+    }
   }
