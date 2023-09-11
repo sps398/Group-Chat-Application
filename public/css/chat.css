@@ -127,11 +127,7 @@ button {
 }
 
 .group-element:hover {
-    /* background-color: rgb(157 190 220); */
-    /* background-color: rgb(193, 205, 216); */
-    /* background-color: rgb(180 210 230); */
     background-color: #202C33;
-    /* opacity: 0.8; */
 }
 
 .group-profile-image-c {
@@ -139,6 +135,15 @@ button {
   height: 50px;
   margin-top: 10px;
   display: inline-block;
+}
+
+#group-profile-image-c-header {
+  display:inline-block;
+  width:5%;
+  height:70%;
+  position:absolute;
+  top:15%;
+  left:1.5%
 }
 
 .group-profile-image {
@@ -154,7 +159,7 @@ button {
   right: 20px;
   padding: 0.2rem 0.5rem;
   border-radius: 50%;
-  background-color: red;
+  background-color: rgb(11, 11, 181);
   color: white;
   font-weight: bold;
   animation: popUpAnimation 0.3s ease-out forwards;
@@ -236,7 +241,7 @@ button {
 }
 
 #sendbtn {
-    width: 5%;
+    /* width: 5%; */
     height: 90%;
     margin-left: 2px;
     cursor: pointer;
@@ -505,12 +510,20 @@ button {
     /* background-color: rgb(44, 83, 117); */
     background-color: #2A3942;
     border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .user-element button {
-    position: absolute;
+  .username {
+    justify-content: flex-start;
+  }
+
+  .admin-btn {
+    /* position: absolute;
     right: 20%;
-    top: 15%;
+    top: 15%; */
+    justify-content: center;
     padding: 5px;
     color: white;
     cursor: pointer;
@@ -524,14 +537,16 @@ button {
     background-color: red;
   }
 
-  /* dropdown */
+  /* group members list dropdown */
 
   .dropdown {
-    position: absolute;
-    right: 1%;
-    top: 15%;
-    display: inline-block;
+    /* position: absolute;
+    right: 1%;    
+    top: 15%; */
+    justify-content: flex-end;
+    /* display: inline-block; */
     background-color: #2A3942;
+    color: white;
   }
   
   .dropdown-toggle {
@@ -540,12 +555,13 @@ button {
     border: none;
     cursor: pointer;
     background-color: #2A3942;
+    color: white;
   }
   
   .dropdown-menu {
     position: absolute;
-    top: 100%;
-    left: 0;
+    top: 0;
+    left: 100%;
     width: 150px;
     padding: 0;
     list-style: none;
@@ -616,11 +632,12 @@ button {
     display: none;
     position: absolute;
     right: 0;
-    background-color: #f9f9f9;
+    /* background-color: #202C33; */
+    background-color: #111B21;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 10000;
-    white-space: nowrap; /* Prevents the content from wrapping */
+    white-space: nowrap;
   }
   
   .profile-dropdown:hover .profile-dropdown-content {
@@ -632,12 +649,13 @@ button {
     display: block;
     padding: 10px;
     text-decoration: none;
-    color: #000000;
+    color: white;
   }
 
   .profile-dropdown-item:hover {
-    background-color: rgb(178, 186, 193);
-    color: white;
+    /* background-color: rgb(178, 186, 193); */
+    background-color: #202C33;
+    /* background-color: #111B21; */
   }
   
   .dropdown-content a:hover {
@@ -664,21 +682,46 @@ button {
     right: -0.2rem;
   }
 
-  @media screen and (max-width: 1000px) {
+  @media screen and (max-width: 900px) {
     #left {
-      width: 400px;
+      /* width: 400px; */
+      width: 60vw;
       position: absolute;
       left: 0;
     }
 
     #right {
-      width: 800px;
+      width: 80vw;
       position: absolute;
-      left: 400px;
+      left: 60vw;
       margin: 0;
+    }
+
+    #message {
+      width: 60%;
     }
 
     #emojiPicker {
       left: 10px;
+    }
+
+    #emojiPickerBtn, #fileUploadBtn {
+      width: 15%;
+    }
+
+    #sendBtn {
+      width: 10%;
+    }
+
+    .user-element {
+      width: 50%;
+    }
+
+    #group-profile-image-c-header {
+      width: 10%;
+    }
+
+    #attach-file-dialog {
+      width: 50%;
     }
   }

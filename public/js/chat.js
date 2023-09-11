@@ -15,13 +15,10 @@ const main = document.getElementById('main');
 const left = document.getElementById('left');
 const right = document.getElementById('right');
 
-
 function handleResize() {
     const totalWidth = left.offsetWidth + right.offsetWidth;
     main.style.width = `${totalWidth}px`;
-    
-    console.log("Total width: " + totalWidth);  
-  }
+}
   
   window.addEventListener('resize', handleResize);
   
@@ -126,9 +123,7 @@ function showParticipants(groupId, participants, groupAdmins) {
         <div class="user-element-container">
             <div id="user-element-${participant.id}" class="user-element">
                 <span class="username" style="margin-right: 10px;">${participant.name}</span>
-                <span class="username" style="margin-right: 10px;">Phone No: ${participant.phoneNo}</span>
                 <button id="admin-btn-${participant.id}" class="admin-btn" style="color: black;cursor:default;margin-right: 10px;display:none;">Admin</button>
-                
             </div>
         </div>
         `;
@@ -238,7 +233,7 @@ async function showGroupMessages(groupId, groupName) {
 
     const rightHeader = document.getElementById('right-header');
     rightHeader.innerHTML = `
-        <div style="display:inline-block;width:5%;height:70%;position:absolute;top:15%;left:1.5%">
+        <div id="group-profile-image-c-header" style="">
             <img class="group-profile-image" src="../images/group-profile-image.jpeg" alt="Group Profile Pic">
         </div>
         <h2 style="position:absolute;top:0%;left:10%;color:white;">${group.name}</h2>
@@ -646,4 +641,59 @@ function addMembers() {
 function logout() {
     localStorage.removeItem('token');
     window.location.href = '../auth/login/login.html';
+}
+
+$("#overlay2").click(function (e) {
+    if (e.target.id === 'overlay2')
+        $("#overlay2").hide();
+})
+
+const pickerOptions = { onEmojiSelect: console.log }
+const picker = new EmojiMart.Picker(pickerOptions)
+const emojiPickerBtn = document.getElementById('emojiPickerBtn');
+const emojiPicker = document.getElementById('emojiPicker');
+emojiPicker.appendChild(picker);
+
+document.getElementById('emojiPickerBtn').addEventListener('click', () => {
+    emojiPicker.style.display = emojiPicker.style.display === "none" ? "block" : "none";
+    event.stopPropagation();
+})
+
+document.addEventListener("click", (event) => {
+    if (!emojiPicker.contains(event.target) && event.target !== emojiPickerBtn) {
+        emojiPicker.style.display = "none";
+    }
+});
+
+function toggleDropdown(participantId) {
+
+    const dropdownMenu = document.getElementById(`dropdown-menu-${participantId}`);
+
+    dropdownMenu.classList.add('show');
+
+    document.addEventListener('click', function (event) {
+        var dropdownMenu = document.getElementById(`dropdown-menu-${participantId}`);
+        var dropdownToggle = document.getElementById(`dropdown-toggle-${participantId}`);
+        if (dropdownMenu && dropdownToggle && !dropdownMenu.contains(event.target) && !dropdownToggle.contains(event.target)) {
+            console.log(event.target);
+            dropdownMenu.classList.remove('show');
+        }
+    });
+}
+
+function backToChatScreen() {
+    $('#group-profile').hide();
+    $('#active').show();
+}
+
+function showProfile() {
+    $('#overlay3').show();
+    console.log(user);
+    $('#profile-username').text(user.name);
+    $('#profile-phoneno').text(user.phoneNo);
+    $('#profile-email').text(user.email);
+}
+
+function closeDialog(dialog) {
+    $(dialog).hide();
 }

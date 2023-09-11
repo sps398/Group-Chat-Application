@@ -45,8 +45,8 @@
             </div>
             <div id="groups-c" style="padding-top: 10px;">
                 <!-- <div class="group-element">
-                        <h3 class="group-name">Group1</h3>
-                    </div> -->
+                    <h3 class="group-name">Group1</h3>
+                </div> -->
             </div>
         </div>
         <div id="right">
@@ -83,11 +83,11 @@
                 <div id="messagesc">
                 </div>
                 <div id="input-message-c" class="flex">
-                    <form action="#" id="sendmessage-form" class="flex">
+                    <form action="#" id="sendmessage-form" class="flex" style="justify-content: space-evenly;">
                         <div id="emojiPickerBtn" class="flex"
                             style="width: 5%;font-size: 1.5rem;color: white;cursor: pointer;margin-right: -0.5rem;"><i
                                 class="fa-regular fa-face-smile"></i></div>
-                        <div class="flex"
+                        <div id="fileUploadBtn" class="flex"
                             style="width: 5%;font-size: 1.5rem;color: white;cursor: pointer;transform: rotate(30deg);"
                             onclick="takeinput()"><i class="gg-attachment"></i></div>
                         <div id="emojiPicker" style="display: none;"></div>
@@ -158,7 +158,7 @@
     </div>
     <div id="overlay4" class="overlay">
         <div id="attach-file-dialog" class="dialog-box bold" style="color:black;">
-            <h3 class="dialog-title">Selected File</h3>
+            <h3 class="dialog-title">Send File</h3>
             <form id="send-file-form" class="flex" action="#" method="POST" enctype="multipart/form-data">
                 <input type="file" id="fileInput" name="file">
                 <div class="overlay4-footer">
@@ -170,7 +170,7 @@
     </div>
     <div class="overlay flex" id="overlay-loader">
         <div id="loader-dialog" class="dialog-box flex flex-column"
-            style="display: flex;align-items: center;justify-content: center;">
+            style="display: flex;align-items: center;justify-content: cen   ter;">
             <div id="'spinner" class="spinner" style="margin-bottom: 1rem;"></div>
             <div id="file-sender-loader-text" style="text-align: center;">Sending file...</div>
         </div>
@@ -180,106 +180,7 @@
     <script src="https://kit.fontawesome.com/4f9275b3db.js" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="../js/initials.js"></script>
-
-    <script>
-        var socket = io('http://localhost:3000');
-
-        socket.on('connect', () => {
-            console.log('CONNECTED');
-            socket.emit('new connection', user);
-        });
-
-        socket.on('new connection', data => {
-            console.log(data.name, ' joined');
-        })
-
-        socket.on('receive message', async (from, msgObj, groupId) => {
-
-            // addToLocalStorage(groupId, msgObj);
-
-            if (currGroup && Number(currGroup.id) === Number(groupId)) {
-                await markMessagesAsSeen(groupId);
-                displayMessage(msgObj);
-                messagesC.scrollTop = messagesC.scrollHeight;
-                // lastMessageId = newMessage.id;
-            }
-
-            else {
-                showNewMessagesCount(groupId);
-            }
-        })
-
-        socket.on('disconnected', (msg) => {
-            console.log(msg);
-        })
-
-        function showNewMessagesCount(groupId) {
-            const newMessageCount = $(`#newMessageCount-${groupId}`);
-            if (newMessageCount.css('display') === 'none') {
-                newMessageCount.text('1');
-                newMessageCount.css('display', 'inline-block');
-            }
-            else {
-                newMessageCount.text(Number(newMessageCount.text()) + 1);
-            }
-        }
-
-        $("#overlay2").click(function (e) {
-            if (e.target.id === 'overlay2')
-                $("#overlay2").hide();
-        })
-
-        const pickerOptions = { onEmojiSelect: console.log }
-        const picker = new EmojiMart.Picker(pickerOptions)
-        const emojiPickerBtn = document.getElementById('emojiPickerBtn');
-        const emojiPicker = document.getElementById('emojiPicker');
-        emojiPicker.appendChild(picker);
-
-        document.getElementById('emojiPickerBtn').addEventListener('click', () => {
-            emojiPicker.style.display = emojiPicker.style.display === "none" ? "block" : "none";
-            event.stopPropagation();
-        })
-
-        document.addEventListener("click", (event) => {
-            if (!emojiPicker.contains(event.target) && event.target !== emojiPickerBtn) {
-                emojiPicker.style.display = "none";
-            }
-        });
-
-        function toggleDropdown(participantId) {
-
-            const dropdownMenu = document.getElementById(`dropdown-menu-${participantId}`);
-
-            dropdownMenu.classList.add('show');
-
-            document.addEventListener('click', function (event) {
-                var dropdownMenu = document.getElementById(`dropdown-menu-${participantId}`);
-                var dropdownToggle = document.getElementById(`dropdown-toggle-${participantId}`);
-                if (dropdownMenu && dropdownToggle && !dropdownMenu.contains(event.target) && !dropdownToggle.contains(event.target)) {
-                    console.log(event.target);
-                    dropdownMenu.classList.remove('show');
-                }
-            });
-        }
-
-        function backToChatScreen() {
-            $('#group-profile').hide();
-            $('#active').show();
-        }
-
-        function showProfile() {
-            $('#overlay3').show();
-            console.log(user);
-            $('#profile-username').text(user.name);
-            $('#profile-phoneno').text(user.phoneNo);
-            $('#profile-email').text(user.email);
-        }
-
-        function closeDialog(dialog) {
-            $(dialog).hide();
-        }
-
-    </script>
+    <script src="../js/socket-handle.js"></script>
     <script src="../js/chat.js"></script>
 </body>
 
