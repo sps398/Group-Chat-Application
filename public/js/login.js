@@ -14,8 +14,9 @@ loginForm.addEventListener('submit', async (e) => {
         const result = await axiosInstance.post('/user/login', user);
         localStorage.setItem('token', result.data.token);
         alert(result.data.message + "..." + "Press ok to continue");
-        window.location.href = "../../dashboard/chat.html";
+        moveToHomePage();
     } catch(err) {
         console.log(err);
+        alert(err.response.data.message);
     }
 });

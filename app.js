@@ -84,12 +84,11 @@ const io = new Server(server);
 let socketUsersMap = new Map();
 
 io.on('connection', (socket) => {
-    // console.log(socket.id, ' user connected');
 
-    socket.on('new connection', (data) => {
-        socketUsersMap.set(socket.id, data.name);
-        io.emit('new connection', data);
-    });
+    socket.on('new connection', (user) => {
+        socketUsersMap.set(user.userId, socket.id);
+        io.emit('new connection', user);
+    }); 
 
     socket.on('new message', (from, message, groupId) => {
         try {
@@ -108,6 +107,19 @@ io.on('connection', (socket) => {
     socket.on('join-room', (room, cb) => {
         socket.join(room);
         cb(room);
+    })
+
+    socket.on('new group', (newGroup) => {
+        const members = newGroup.members;
+        members.forEach(member => {
+            socket.to(socketUsersMap.get(Number(member))).emit('new group', { id:newGroup.id , name:newGroup.name });
+        })
+    })
+
+    socket.on('removed from group', (userId, groupId, groupName) => {
+        userId = Number(userId);
+        if(socketUsersMap.has(Number(userId)))
+            socket.to(socketUsersMap.get(userId)).emit('removed from group', groupId, groupName);
     })
 });
 

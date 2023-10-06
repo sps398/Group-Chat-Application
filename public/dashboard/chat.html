@@ -27,20 +27,28 @@
 <body>
     <div id="main">
         <div id="left">
-            <div id="left-header" style="background-color: #202C33">
-                <div class="profile-dropdown">
-                    <div class="user-profile">
-                        <span><i class="fa-solid fa-user"></i></span></i> <span><i
-                                class="fa-sharp fa-solid fa-caret-down"></i></span>
-                    </div>
-                    <div class="profile-dropdown-content">
-                        <a href="#" class="profile-dropdown-item" onclick="showProfile()">My Profile</a>
-                        <a href="#" class="profile-dropdown-item" onclick="logout()">Logout</a>
-                    </div>
+            <div id="left-header" style="background-color: #202C33;display: flex;justify-content: space-between;align-items: center;">
+                <div id="left-header-title" class="header-title" style="color: white;margin-left: 5%;display: inline-block;">
+                    <h2 style="">My groups</h2>
                 </div>
-                <h2 style="color: white;margin-left: 5%;display: inline-block;">My groups</h2>
-                <div id="newgrpbtnc">
-                    <button id="newgrpbtn" onclick="$('#overlay1').show();">New group</button>
+                <div class="menu-header">
+                    <div id="search-new-groups-c">
+                        <button id="search-new-groups"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <span class="tooltip">Search new groups</span>
+                    </div>
+                    <div id="newgrpbtnc">
+                        <button id="newgrpbtn" onclick="showCreateGroupDialog()">New group</button>
+                    </div>
+                    <div class="profile-dropdown">
+                        <div class="user-profile">
+                            <span><i class="fa-solid fa-user"></i></span></i> <span><i
+                                    class="fa-sharp fa-solid fa-caret-down"></i></span>
+                        </div>
+                        <div class="profile-dropdown-content">
+                            <a href="#" class="profile-dropdown-item" onclick="showProfile()">My Profile</a>
+                            <a href="#" class="profile-dropdown-item" onclick="logout()">Logout</a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="groups-c" style="padding-top: 10px;">
@@ -48,6 +56,7 @@
                     <h3 class="group-name">Group1</h3>
                 </div> -->
             </div>
+            div#sear
         </div>
         <div id="right">
             <div id="default" class="flex flex-column"
@@ -57,12 +66,25 @@
                     encrypted</p>
                 <h3 class="bold">Join or select a group to chat with others.</h3>
             </div>
-            <div id="group-profile" style="width:100%;height:100%;background-color: #202C33;color:white;display:none;">
+            <div id="group-profile" style="width:100%;height:100%;background-color: #202C33;color:white;display:none;overflow-y: auto;">
                 <h2 id="group-profile-title"><span class="left-nav" style="color: grey;cursor: pointer;padding: 5px;"><i
                             class="fa-solid fa-arrow-left"
-                            onclick="backToChatScreen()"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;Group Participants</h2>
+                            onclick="backToChatScreen()"></i></span>&nbsp;&nbsp;&nbsp;&nbsp;Group Info</h2>
                 <hr>
-                <input type="search" id="search-users" placeholder=" Search by name or email..." />
+                <div class="group-info_profile-photo-c flex">
+                    <img src="" alt="Profile-photo" id="group-info_profile-photo" class="group-profile-image">
+                </div>
+                <div id="group-info_desc-c">
+                    <h4>Group Description</h4>
+                    <p id="group-info_desc"></p>
+                </div>
+                <hr>
+                <div id="group-referral-code-c">
+                    <h4>Group Referral Code</h4>
+                    <p id="group-referral-code"></p>
+                </div>
+                <hr>
+                <input type="search" id="search-participants" class="search-bar" placeholder=" Search by name or phone no..." />
                 <div id="participants-list">
                     <!-- <div class="user-element">
                             <span id="username" style="margin-right: 10px;">Shashank</span>
@@ -75,6 +97,10 @@
                                 </ul>
                             </div>
                         </div> -->
+                </div>
+                <div id="grp-actions" class="flex">
+                    <!-- <button id="add-more-users-grp-btn" onclick="showAddUsersDialog(false)" class="grp-btn" hidden>Add more users</button>
+                    <button id="exit-grp-btn" class="grp-btn">Exit Group</button> -->
                 </div>
             </div>
             <div id="active" style="display:none;">
@@ -92,7 +118,7 @@
                             onclick="takeinput()"><i class="gg-attachment"></i></div>
                         <div id="emojiPicker" style="display: none;"></div>
                         <input type="text" id="message" name="message" placeholder=" Type a message"
-                            style="font-size: 17px;">
+                            style="font-size: 17px;" autocomplete="off">
                         <button id="sendbtn" type="submit"><img src="../images/send-button.png" alt=""></button>
                     </form>
                 </div>
@@ -102,7 +128,7 @@
     <div id="overlay1" class="overlay">
         <div id="add-group-dialog" class="dialog-box bold">
             <h3 class="dialog-title">New group</h3>
-            <form action="#" id="add-group-form">
+            <form action="#" id="add-group-form" method="POST" enctype="multipart/form-data">
                 <div class="form-element">
                     <label for="name">Name:</label>
                     <input type="text" id="group-name" value="" placeholder="Name of group...">
@@ -112,27 +138,39 @@
                     <input type="text" id="group-desc" placeholder="Add description...">
                 </div>
                 <div class="form-element">
-                    <button onclick="showUsersDialog()"
-                        style="background-color: green;color:white;padding:5px;cursor: pointer;">+ Add
+                    <button type="button" onclick="showAddUsersDialog(true)"
+                        style="background-color: #2A3942;color:white;padding:10px;margin-top: 0.5rem;border-radius:0.5rem;cursor: pointer;">+ Add
                         members</button>
+                    <p id="participantsCount" style="display: inline-block;color: green;margin-left: 1rem;"></p>
+                </div>
+                <div class="form-element">
+                    <label for="group-photo">
+                        Upload group photo: 
+                    </label>
+                    <input type="file" id="group-photo" style="background-color: inherit;height: 2rem;" accept="image/*">
                 </div>
                 <div class="footer">
-                    <button type="submit" id="add-group" class="bold" onclick="addNewGroup()">Create</button>
-                    <button id="cancel" class="bold" onclick="$('#overlay1').hide();">Cancel</button>
+                    <button type="submit" id="add-group" class="bold">Create</button>
+                    <button type="button" id="cancel" class="bold" onclick="$('#overlay1').hide();">Cancel</button>
                 </div>
-            </form>
+            </form> 
         </div>
     </div>
     <div id="overlay2" class="overlay">
         <div id="add-users-dialog" class="dialog-box bold" style="color:black;">
-            <h3 class="dialog-title">Add Users</h3>
+            <h3 class="dialog-title" style="background-color: inherit;display: inline-block;">Select Users</h3>
+            <h4 id="selectedCount" style="display: inline-block;color: green;margin-left: 1rem;">&#183;&nbsp;0 selected</h4>
+            <input type="search" id="search-non-participants" class="search-bar" placeholder=" Search by name or phone no...">
             <div id="user-list">
                 <!-- <div class="user">
                     <input type="checkbox" id="user1" name="user1" value="User1">
                     <label for="user1">User 1</label>
                 </div> -->
             </div>
-            <button id="add-users-btn" class="btn" onclick="addMembers()">Add</button>
+            <!-- <div id="user-alert" style="color: white;display: none;"></div> -->
+            <div id="add-users-dialog-action">
+                <button id="add-users-btn" class="btn">Add</button>
+            </div>
         </div>
     </div>
     <div id="overlay3" class="overlay">
@@ -175,12 +213,39 @@
             <div id="file-sender-loader-text" style="text-align: center;">Sending file...</div>
         </div>
     </div>
+    <div class="overlay" id="overlay-groups-search">
+        <div class="dialog-box" id="new-groups-dialog">
+            <h3 class="dialog-title">Search new groups</h3>
+            <button id="group-dialog-cancel" class="dialog-cancel" onclick="closeDialog('#overlay-groups-search')"><i class="fa-solid fa-xmark"></i></button>
+            <input type="search" id="searchbar-new-groups" class="search-bar" placeholder="Enter name...">
+            <div id="new-groups-list">
+            </div>
+        </div>
+    </div>
+    <div class="overlay" id="overlay-enter-group-code">
+        <div class="dialog-box" id="enter-group-code-dialog">
+            <form action="#" id="join-group-form">
+                <label for="group-code-input">Enter group code:</label>
+                <input type="text" id="group-code-input" name="group-code-input" required>
+                <div style="margin-top: 0.5rem;">
+                    <button type="button" onclick="closeDialog('#overlay-enter-group-code')">Cancel</button>
+                    <button type="submit">Done</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="overlay" id="overlay-image-zoom">
+        <button id="group-dialog-cancel" class="dialog-cancel" onclick="closeDialog('#overlay-image-zoom')"><i class="fa-solid fa-xmark"></i></button>
+        <div id="img-c">
+            <img src="" alt="" id="zoomed-img">
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://kit.fontawesome.com/4f9275b3db.js" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="../js/initials.js"></script>
-    <script src="../js/socket-handle.js"></script>
+    <!-- <script src="../js/socket-handle.js"></script> -->
     <script src="../js/chat.js"></script>
 </body>
 

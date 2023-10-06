@@ -12,7 +12,15 @@ const Group = sequelize.define('groups', {
         type: Sequelize.STRING,
         allowNull: false,
     },
-    description: Sequelize.STRING
+    description: Sequelize.STRING,
+    groupCode: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
+    },
+    groupPhoto: {
+        type: Sequelize.STRING
+    }
 });
 
 module.exports = Group;

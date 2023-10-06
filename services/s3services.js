@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 
 const uploadToS3 = async function(data, filename) {
+    console.log("DATA ", data);
     const BUCKET_NAME = process.env.BUCKET_NAME;
     const IAM_USER_KEY = process.env.IAM_USER_KEY;
     const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
@@ -25,7 +26,7 @@ const uploadToS3 = async function(data, filename) {
                 reject(err);
             }
             else {
-                console.log('Success', s3Response);
+                console.log(s3Response.Location);
                 resolve(s3Response);
             }
         });

@@ -1,15 +1,35 @@
+:root {
+  --chat-color-sender: #025144;
+  --chat-color-receiver: #202C33;
+  --file-download-btn-sender: rgba(55, 124, 113, 0.9);
+  --file-download-btn-receiver: #364b57;
+}
+
 body {
     margin: 0;
     padding: 0;
-    /* padding-top: 1%; */
-    /* overflow: hidden; */
-    /* background-color: rgb(193, 203, 212); */
-    /* font-family: 'Belanosima', sans-serif; */
     font-family: 'Ysabeau Infant', sans-serif;
+}
+
+::-webkit-scrollbar {
+  height: 12px;
+  width: 6px;
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3c454a;
+  -webkit-border-radius: 1ex;
+  -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+  background: #000;
 }
 
 * {
     box-sizing: border-box;
+    scrollbar-color: red green;
 }
 
 .flex {
@@ -43,20 +63,57 @@ button {
     font-weight: bold;
 }
 
+.menu-header {
+  width: 60%;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#search-new-groups-c .tooltip {
+  visibility: hidden;
+  width: 120px;
+  background-color: #111B21;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+}
+
+#search-new-groups-c:hover .tooltip {
+  visibility: visible;
+}
+
+#search-new-groups {
+  padding: 0.5rem 0.7rem;
+  background-color: inherit;
+  color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+#search-new-groups:active {
+  background-color: #2A3942;
+}
+
 #newgrpbtnc {
     height: 100%;
-    position: absolute;
+    margin: 0 0.5rem;
+    /* position: absolute;
     top:33%;
-    right: 20%;
+    right: 20%; */
     display: inline-block;
 }
 
 #newgrpbtn {
-    /* background-color: rgb(28, 85, 135); */
-    background-color: #2A3942;
-    padding: 5px;
-    color: white;
-    cursor: pointer;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  background-color: #2A3942;
+  border-radius: 0.3rem;  
 }
 
 #main {
@@ -67,25 +124,20 @@ button {
 }
 
 #left-header, #right-header {
-    /* border: 2px solid darkgoldenrod; */
     width: 100%;
     height: 10%;
     position: absolute;
     top: 0;
     color: white;
-    /* background-color: #202C33; */
 }
 
 #right-header {
-  /* background-color: rgb(176, 176, 222); */
-  /* background-color: rgb(90, 149, 201); */
   background-color: #202C33;
   color: white;
   cursor: pointer;
 }
 
 #right-header:hover {
-  /* background-color: rgb(116, 181, 235); */
   background-color: #2A3942;
 }
 
@@ -94,15 +146,17 @@ button {
   height: 98vh;
   position: fixed;
   left: 0;
-  overflow-y: auto;
   background-color: #111B21;
   border-right: 1px solid #2d3b43;
+  scrollbar-color: red green;
 }
 
 #groups-c {
     width: 100%;
+    height: 90%;
     position: absolute;
     top: 10%;
+    overflow-y: auto;
 }
 
 .group-element {
@@ -112,18 +166,16 @@ button {
     color: white;
     position: relative;
     padding: 10px;
-    padding-left: 30px;
-    /* text-align: center; */
+    padding-left: 20px;
     cursor: pointer;
     border-bottom: 1px solid #202C33;
 }
 
 .group-name-c {
-  margin-left: 15px;
+  margin-left: 20px;
   position: absolute;
-  top: 2px;
+  top: 5px;
   display: inline-block;
-  /* border-bottom: 1px solid #202C33; */
 }
 
 .group-element:hover {
@@ -146,6 +198,14 @@ button {
   left:1.5%
 }
 
+.group-info_profile-photo-c {
+  width: 20%;
+  height: 20%;
+  margin-top: 10px;
+  margin: auto;
+  cursor: pointer;
+}
+
 .group-profile-image {
   width: 100%;
   height: 100%;
@@ -159,10 +219,115 @@ button {
   right: 20px;
   padding: 0.2rem 0.5rem;
   border-radius: 50%;
-  background-color: rgb(11, 11, 181);
-  color: white;
+  background-color: #00A884;
+  color: black;
   font-weight: bold;
   animation: popUpAnimation 0.3s ease-out forwards;
+}
+
+.dialog-cancel {
+  color: white;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem;
+  background-color: #2A3942;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+}
+
+#new-groups-list {
+  width: 100%;
+  height: 70%;
+  margin-top: 1rem;
+  overflow-y: auto;
+}
+
+.dialog-group-element {
+  width: 100%;
+  background-color: #111B21;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  border-bottom: 1px solid #202C33;
+}
+
+#empty-msg-element {
+  width: 100%;
+  height: 100%;
+  color: white;
+}
+
+#enter-group-code-dialog {
+  width: 30%;
+  padding: 2rem;
+}
+
+#join-group-form button {
+  padding: 0.5rem;
+  color: white;
+  background-color: #2A3942;
+  cursor: pointer;
+  margin: 0 0.1rem;
+  border-radius: 0.5rem;
+}
+
+#enter-group-code-dialog input {
+  width: 100%;
+  margin: 1rem 0;
+  height: 2rem;
+}
+
+.chat-image-c {
+  width: 100%;
+  height: 300px;
+}
+
+.chat-image-c > img {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.dialog-group-details {
+  width: 50%;
+  display: flex;
+  align-items: center;
+}
+
+.dialog-group-name-c {
+  margin-left: 1rem;
+  position: relative;
+  top: -0.5rem;
+}
+
+.dialog-group-profile-image-c {
+  width: 3rem;
+  height: 100%;
+}
+
+.dialog-group-profile-image {
+  width: 100%;
+  height: 3rem;
+  border-radius: 50%;
+}
+
+.group-action {
+  width: 20%;
+  height: 99%;
+}
+
+.join-group-btn {
+  width: 100%;
+  height: 100%;
+  padding: 0.8rem 0.5rem;
+  background-color: green;
+  color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
 }
 
 @keyframes popUpAnimation {
@@ -191,13 +356,12 @@ button {
 }
 
 #messagesc {
-    /* border: 2px solid violet; */
     width: 100%;
     height: 80%;
+    padding-bottom: 15px;
     overflow-y: auto;
     position: absolute;
     top: 10%;
-    /* background-color: #e9e4df; */
     background-image: url('../images/chat_bg2.jpg');
     background-repeat: no-repeat;
     background-size: 100% auto;
@@ -209,15 +373,31 @@ button {
     height: 10%;
     position: absolute;
     bottom: 0;
-    /* background-color: rgb(12, 63, 107); */
     background-color: #202C33;
-    /* border-top-left-radius: 5%;
-    border-top-right-radius: 5%; */
 }
 
 #input-message-c > input {
   background-color: #2A3942;
 }
+
+#grp-actions {
+  margin-left: 20px;
+  display: inline-block;
+  margin-top: 10px;
+  justify-content: space-between;
+}
+
+.grp-btn {
+  padding: 1rem;
+  color: white;
+  border-radius: 0.5rem;
+  background-color: #2A3942;
+  cursor: pointer;
+}
+
+/* #add-more-users-grp-btn {
+  display: none !important;
+} */
 
 #sendmessage-form {
     width: 100%;
@@ -241,7 +421,6 @@ button {
 }
 
 #sendbtn {
-    /* width: 5%; */
     height: 90%;
     margin-left: 2px;
     cursor: pointer;
@@ -264,19 +443,17 @@ button {
     left: 0;
     width: 100vw;
     height: 100vh;
-    /* background-color: rgba(128, 128, 128, 0.5); */
-    background-color: rgba(8, 7, 7, 0.5);
-    /* background-color: rgba(155, 144, 144, 0.5); */
-}
-
-#overlay1, #overlay2, #overlay3, #overlay4, #overlay-loader {
     display: none;
+    background-color: rgba(8, 7, 7, 0.5);
 }
 
 #attach-file-dialog {
   width: 30%;
   height: 30%;
-  background-color: white;
+}
+
+.file-upload {
+  border-radius: 1rem;
 }
 
 .dialog-box {
@@ -286,7 +463,16 @@ button {
     top: 45vh;
     left: 50vw;
     transform: translate(-50%, -50%);
+    background-color: #202C33;
+    color: white;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+#new-groups-dialog {
+  width: 40%;
+  height: 70%;
+  padding: 2rem;
+  padding-top: 0;
 }
 
 .spinner {
@@ -305,34 +491,31 @@ button {
 
 #loader-dialog {
   padding: 3rem;
-  background-color: white;
 }
 
 #add-group-dialog {
   padding: 5rem;
   padding-top: 0;
-  background-color: white;
 }
 
 #add-users-dialog {
-    height: 300px;
+    width: 500px;
+    height: 500px;
     padding: 2rem;
     padding-top: 0;
-    background-color: white;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 #user-profile-dialog {
   width: 50%;
   height: 50%;
-  background-color: white;
-  /* padding: ; */
 }
 
 .profile-item {
-  background-color: rgb(236 228 228);
   margin: 1rem;
   padding: 1rem;
+  background-color: #2A3942;
+  color: white;
 }
 
 .overlay4-footer {
@@ -342,7 +525,7 @@ button {
 }
 
 .close-btn, .send-btn {
-  background-color: grey;
+  background-color: #2A3942;
   color: white;
   padding: 1rem;
   cursor: pointer;
@@ -354,15 +537,15 @@ button {
   height: 100%;
 }
 
-.send-btn {
-  /* background-color: blue; */
-  background-color: #7C8C95;
+#send-file-btn {
+  background-color: #111B21;
 }
 
 .dialog-title {
     padding: 10px;
-    background-color: rgb(28, 85, 135);
+    padding-left: 0;
     color: white;
+    margin-left: 1rem;
 }
 
 .form-element,
@@ -381,6 +564,7 @@ button {
     height: 2rem;
     margin-top: 10px;
     padding: 1rem;
+    border-radius: 0.5rem;
 }
 
 .footer {
@@ -395,14 +579,15 @@ button {
     color: white;
     float: right;
     cursor: pointer;
+    border-radius: 0.5rem;
 }
 
 #add-group {
-    background-color: blue;
+    background-color: #111B21;
 }
 
 #cancel {
-    background-color: red;
+    background-color: #2A3942;
     margin-right: 10px;
 }
 
@@ -410,8 +595,8 @@ button {
     width: 100%;
     color: white;
     margin-top: 10px;
-    padding: 5px;
-    background-color: green;
+    padding: 1rem;
+    background-color: #2A3942;
 }
 
 #add-users-dialog-footer {
@@ -420,43 +605,57 @@ button {
     align-items: center;
 }
 
+.file-icon {
+  font-size: 1.5rem;
+}
+
+.file-type {
+  font-size: 0.8rem;
+}
+
 .chat-container {
     display: flex;
-    padding: 10px;
-    padding-left: 50px;
-    padding-right: 50px;
+    padding: 2px 50px;
   }
-
-/* .chat-container::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: -10px;
-    transform: translateY(-50%);
-    border-top: 10px solid transparent;
-    border-right: 10px solid antiquewhite;
-    border-bottom: 10px solid transparent;
-} */
 
 .content {
   margin: 0.5rem 0;
+  margin-top: 0;
+  padding: 2px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.chat-details {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .file-download-btn {
   font-size: 2rem;
   margin-right: 0.5rem;
+  color: var(--file-download-btn-receiver);
   cursor: pointer;
 }
   
   .message {
     display: inline-block;
+    max-width: 80%;
     margin-bottom: 1px;
-    background-color:rgb(45 104 157);
+    background-color: var(--chat-color-receiver);
     padding: 10px;
     border-radius: 5px;
     color: white;
+  }
+
+  .file-message {
+    width: 30%;
+    padding: 2px;
   }
   
   .sender {
@@ -466,14 +665,31 @@ button {
   
   .timestamp {
     font-size: 12px;
-    text-align: center;
-    /* color: #888888; */
+    text-align: end;
   }
   
   .text {
-    font-size: 17px;
+    font-size: 1.2rem;
     margin-bottom: 5px;
+    max-width: 100%;
+    overflow-wrap: break-word;
   }
+
+  .filename {
+    max-width: 50%;  
+    overflow-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .filename::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20%;
+}
 
   .active {
     background-color: #2A3942;
@@ -490,6 +706,23 @@ button {
     border: none;
     height: 1px;
     background-color: #2d3b43;
+  }
+
+  #group-info_desc-c, #group-referral-code-c {
+    padding-left: 1rem;
+  }
+
+  #group-info_desc {
+    padding-left: 1rem;
+    border-left: 7px solid #111B21;
+    border-radius: 0.3rem;
+  }
+
+  #group-referral-code {
+    color: white;
+    border: 1px solid #111B21;
+    padding: 1rem;
+    display: inline-block;
   }
 
   #participants-list {
@@ -520,13 +753,15 @@ button {
   }
 
   .admin-btn {
-    /* position: absolute;
-    right: 20%;
-    top: 15%; */
-    justify-content: center;
     padding: 5px;
+    font-size: 0.8rem;
     color: white;
-    cursor: pointer;
+    cursor: default;
+    margin-right: 10px;
+    display:none;
+    background-color: #111B21;
+    justify-content: center;
+    border-radius: 0.3rem;
   }
 
   #make-admin-btn {
@@ -535,6 +770,13 @@ button {
 
   #remove-user-btn {
     background-color: red;
+  }
+
+  #group-name-header {
+    position:absolute;
+    top:0%;
+    left:10%;
+    color:white;
   }
 
   /* group members list dropdown */
@@ -565,7 +807,9 @@ button {
     width: 150px;
     padding: 0;
     list-style: none;
-    background-color: #fff;
+    /* background-color: #111B21; */
+    background-color: #2A3942;
+    color: white;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     opacity: 0;
     visibility: hidden;
@@ -582,27 +826,29 @@ button {
   
   .dropdown-menu li {
     padding: 10px;
-    border-bottom: 1px solid #ccc;
-    color: black;
     cursor: pointer;
   }
   
   .dropdown-menu li:hover {
-    /* background-color: #f9f9f9; */
-    background-color: rgb(178, 186, 193);
+    background-color: #202C33;
   }
 
-  #search-users {
-    margin-left: 20px;
-    margin-top: 20px;
-    width: 40%;
+  .search-bar {
+    width: 100%;
     height: 2rem;
     padding: 0.5rem;
     border: none;
-    border-radius: 1rem;
-    border-color: #2A3942;
-    background-color: #2A3942;
+    background-color: #202C33 !important;
     color: white;
+    outline: none;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #111B21 !important;
+  }
+
+  #search-participants {
+    margin-left: 20px;
+    margin-top: 20px;
+    width: 40%;
   }
 
   #search-users:focus {
@@ -618,21 +864,17 @@ button {
   /* User Profile Dropdown */
 
   .profile-dropdown {
-    position: absolute;
-    top: 40%;
-    right: 5%;
-    position: absolute;
     margin-left: 1rem;
     color: white;
     cursor: pointer;
     display: inline-block;
+    justify-content: flex-end;
   }
   
   .profile-dropdown-content {
     display: none;
     position: absolute;
     right: 0;
-    /* background-color: #202C33; */
     background-color: #111B21;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -653,20 +895,25 @@ button {
   }
 
   .profile-dropdown-item:hover {
-    /* background-color: rgb(178, 186, 193); */
     background-color: #202C33;
-    /* background-color: #111B21; */
   }
   
   .dropdown-content a:hover {
     background-color: #dddddd;
   }
 
+  .dialog-box input {
+    border: none;
+    background-color: #2A3942;
+    color: white;
+    outline: none;
+  }
+
   .triangle-sender {
     width: 0;
     height: 0;
     border-right: 10px solid transparent;
-    border-top: 15px solid #216666;
+    border-top: 15px solid var(--chat-color-sender);
     border-radius: 10%;
     position: relative;
     left: -0.2rem;
@@ -676,15 +923,111 @@ button {
     width: 0;
     height: 0;
     border-left: 10px solid transparent;
-    border-top: 15px solid rgb(45 104 157);
+    border-top: 15px solid var(--chat-color-receiver);
     border-radius: 10%;
     position: relative;
     right: -0.2rem;
   }
 
+  .dialog_user_element {
+    background-color: #2A3942;
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.3rem 0;
+    color: white;
+    display: flex;
+    align-items: center;
+  }
+
+  .dialog_user_element input.userCheckBox {
+    width: 10%;
+    height: 10%;
+    cursor: pointer;
+    transform : scale(1.5);
+  }
+
+  #user-list {
+    height: 60%;
+    overflow-y: auto;
+  }
+
+  .dialog_user_details {
+    width: 90%;
+    text-align: left;
+  }
+
+  .dialog_user_details > .username {
+    font-size: 1.2rem;
+    justify-content: flex-start;
+  }
+
+  .dialog_user_details > .phone-no {
+    font-size: 0.8rem;
+    justify-content: flex-start;
+  }
+
+  #add-users-dialog-action {
+    width: 60%;
+    height: 10%;
+    margin: auto;
+    margin-top: 1rem;
+  }
+
+  #add-users-dialog-action button {
+    width: 100%;
+    background-color: #111B21;
+  }
+
+  #overlay-image-zoom {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: #111B21;
+  }
+
+  #img-c {
+    /* width: 45%; */
+    height: 90%;
+  }
+
+  #zoomed-img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .chat-image-c img:hover {
+    cursor: pointer;
+  }
+
+  .image-message {
+    width: 35%;
+    padding: 2px;
+  }
+
+  @media (min-width: 900px) and (max-width: 1200px) {
+    #left {
+      width: 40vw;
+    }
+
+    #right {
+      width: 60vw;
+    }
+
+    #message {
+      width: 70%;
+    }
+
+    #group-profile-image-c-header {
+      width: 8%;
+    }
+
+    #group-name-header {
+      left:12%;
+    }
+  }
+
   @media screen and (max-width: 900px) {
     #left {
-      /* width: 400px; */
       width: 60vw;
       position: absolute;
       left: 0;
@@ -697,7 +1040,19 @@ button {
       margin: 0;
     }
 
+    #left-header-title {
+      display: none;
+    }
+
+    #messagesc {
+      background-size: 120% auto;
+    }
+
     #message {
+      width: 60%;
+    }
+
+    .file-message {
       width: 60%;
     }
 
@@ -721,7 +1076,19 @@ button {
       width: 10%;
     }
 
+    #group-name-header {
+      left:15%;
+    }
+
     #attach-file-dialog {
       width: 50%;
+    }
+
+    #new-groups-dialog {
+      width: 80%;
+    }
+
+    .group-action {
+      width: 20%;
     }
   }

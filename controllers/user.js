@@ -12,6 +12,7 @@ const fs = require('fs');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const path = require('path');
+const shortid = require('shortid');
 require('dotenv').config();
 
 const registerUser = async (req, res, next) => {
@@ -64,13 +65,29 @@ const loginUser = async (req, res, next) => {
     }
 };
 
-const getAllUsers = async (req, res, next) => {
+const verify = (req, res) => {
+    let user = req.user;
+    user = {
+        userId: user.id,
+        name: user.name,
+        phoneNo: user.phoneNo,
+        email: user.email
+    }
+    return res.status(200).json({ success: true, user: user });
+}
+
+const getAllOtherUsers = async (req, res, next) => {
     try {
         const users = await User.findAll({
+            where: {
+                id: {
+                    [Op.ne] : req.user.id
+                }
+            },
             attributes: { exclude: ['password'] }
         });
         return res.status(200).json({ success: true, users: users });
-    } catch(err) {
+    } catch (err) {
         return res.status(500).json({ message: "Some error occurred!", success: false });
     }
 };
@@ -79,7 +96,7 @@ const postMessage = async (req, res, next) => {
     try {
         const user = req.user;
         const { groupId } = req.body;
-    
+
         const newMessage = {
             message: req.body.message,
             userId: user.id,
@@ -87,7 +104,7 @@ const postMessage = async (req, res, next) => {
             groupId: groupId,
             messageType: 'text'
         };
-    
+
         const response = await Chat.create(newMessage);
 
         await setMessageStatusAsUnseen(groupId, response.id, req);
@@ -95,7 +112,7 @@ const postMessage = async (req, res, next) => {
         console.log(response);
 
         return res.status(200).json({ success: true, message: "Message added successfully", messageObj: response });
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json({ success: false, message: "Something went wrong!" });
     }
@@ -104,12 +121,12 @@ const postMessage = async (req, res, next) => {
 async function setMessageStatusAsUnseen(groupId, messageId, req) {
     return new Promise(async (resolve, reject) => {
         try {
-            const groups = await Group.findAll({ where: { id: groupId }});
+            const groups = await Group.findAll({ where: { id: groupId } });
             const group = groups[0];
             const membersOfGroup = await group.getUsers();
             membersOfGroup.forEach(async (member) => {
-                let seen=false;
-                if(member.id === req.user.id)
+                let seen = false;
+                if (member.id === req.user.id)
                     seen = true;
 
                 const user_messages = await UserMessages.create({
@@ -120,7 +137,7 @@ async function setMessageStatusAsUnseen(groupId, messageId, req) {
                 });
             })
             resolve(membersOfGroup);
-        } catch(err) {
+        } catch (err) {
             reject(err);
         }
     })
@@ -134,37 +151,37 @@ const markMessagesAsSeen = async (req, res) => {
         await UserMessages.update(
             { seen: true },
             {
-            where: {
-                groupId: groupId,
-                userId: userId,
-                seen: false
-            }
+                where: {
+                    groupId: groupId,
+                    userId: userId,
+                    seen: false
+                }
             }
         );
-    
+
         return res
-                .status(200)
-                .json({
-                    success: true,
-                    message: "Marked the messages as seen"
-                });
-    } catch(err) {
+            .status(200)
+            .json({
+                success: true,
+                message: "Marked the messages as seen"
+            });
+    } catch (err) {
         console.log(err);
         return res
-                .status(500)
-                .json({
-                    success: false,
-                    message: 'Something went wrong!'
-                });
+            .status(500)
+            .json({
+                success: false,
+                message: 'Something went wrong!'
+            });
     }
-  };
+};
 
 const getMessages = async (req, res, next) => {
     try {
         const groupId = Number(req.query.groupId);
-        let result = await Chat.findAll({ where: { groupId: groupId }});
+        let result = await Chat.findAll({ where: { groupId: groupId } });
         return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: result });
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
     }
@@ -174,7 +191,7 @@ const getNewMessages = async (req, res) => {
     try {
         const newMessages = await UserMessages.findAll({ where: { groupId: req.query.groupId, userId: req.user.id, seen: false } });
         return res.status(200).json({ success: true, message: 'Retrieved new messages successfully!', newMessages: newMessages });
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
     }
@@ -182,14 +199,10 @@ const getNewMessages = async (req, res) => {
 
 const getOlderMessages = async (req, res, next) => {
     try {
-        // const lastMessageId = Number(req.query.lastMessageId);
         const groupId = Number(req.query.groupId);
-        // if(lastMessageId === -1)
-        //     return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: [] });    
-        // const result = await ArchivedChats.findAll({ where: { id : { [Op.lt] : lastMessageId }, groupId: groupId } });
         const result = await ArchivedChats.findAll({ where: { groupId: groupId } });
         return res.status(200).json({ success: true, message: 'Retrieved all messages succesfully!', messages: result });
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
     }
@@ -197,12 +210,33 @@ const getOlderMessages = async (req, res, next) => {
 
 const createGroup = async (req, res, next) => {
     try {
-        let newGroup = req.body.newGroup;
+        let newGroup = JSON.parse(req.body.newGroup);
         let members = newGroup.members;
+        const file = req.file;
+        let fileUrl;
+
+        if(file) {
+            const fileContent = fs.readFileSync(file.path);
+            const s3Response = await s3Services.uploadToS3(fileContent, file.originalname);
+            fileUrl = s3Response.Location
+        }
+        else
+            fileUrl=null;
+
+        let isUnique=false;
+        let groupCode=null;
+        while(!isUnique) {
+            groupCode = shortid.generate();
+            const group = await Group.findOne({ where: { groupCode } });
+            if(!group)
+                isUnique=true;
+        }
 
         newGroup = {
             name: newGroup.name,
-            description: newGroup.description
+            description: newGroup.description,
+            groupCode: groupCode,
+            groupPhoto: fileUrl
         };
 
         const group = await Group.create(newGroup);
@@ -216,16 +250,14 @@ const createGroup = async (req, res, next) => {
             try {
                 const user = await User.findOne({ where: { id: userId } });
                 await group.addUser(user);
-                console.log('User ' + user.id + " successfully added to group!");
-            } catch(err) {
+            } catch (err) {
                 console.log(err);
-                // throw new Error(err);
             }
         })
 
         return res.status(200).json({ success: true, group: group });
 
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
     }
@@ -235,7 +267,8 @@ const getGroups = async (req, res, next) => {
     try {
         const groups = await req.user.getGroups();
         return res.status(200).json({ success: true, groups: groups });
-    } catch(err) {
+    } catch (err) {
+        console.log(err);
         return res.status(500).json({ message: 'Something went wrong!', success: false });
     }
 }
@@ -247,7 +280,7 @@ const getParticipants = async (req, res, next) => {
         const participants = await group.getUsers({ attributes: ['id', 'name', 'email', 'phoneNo'] });
 
         return res.status(200).json({ success: true, participants: participants });
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json({ success: false, message: "Something went wrong!" });
     }
@@ -259,7 +292,7 @@ const getGroupAdmins = async (req, res, next) => {
         const result = await Admin.findAll({ where: { groupId: groupId } });
 
         return res.status(200).json({ success: true, admins: result });
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
     }
@@ -269,11 +302,11 @@ const addGroupAdmin = async (req, res, next) => {
     try {
         const userId = req.body.participantId;
         const groupId = req.params.groupId;
-    
+
         await Admin.create({ groupId: groupId, adminId: userId });
 
         return res.status(200).json({ success: true, message: 'Added as an admin successfully' });
-    } catch(err) {
+    } catch (err) {
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
     }
 }
@@ -282,11 +315,11 @@ const removeGroupAdmin = async (req, res, next) => {
     try {
         const userId = req.params.participantId;
         const groupId = req.params.groupId;
-    
-        await Admin.destroy({ where: { groupId: groupId, adminId: userId }});
+
+        await Admin.destroy({ where: { groupId: groupId, adminId: userId } });
 
         return res.status(200).json({ success: true, message: 'Removed as an admin successfully' });
-    } catch(err) {
+    } catch (err) {
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
     }
 }
@@ -295,12 +328,12 @@ const removeUserFromGroup = async (req, res, next) => {
     try {
         const userId = req.params.participantId;
         const groupId = req.params.groupId;
-    
+
         const group = await Group.findOne({ where: { id: groupId } });
         await group.removeUser(userId);
 
         return res.status(200).json({ success: true, message: 'Removed user from group successfully' });
-    } catch(err) {
+    } catch (err) {
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
     }
 }
@@ -308,8 +341,8 @@ const removeUserFromGroup = async (req, res, next) => {
 const postFile = async (req, res) => {
     try {
         const user = req.user;
-        const file = req.file;
         const groupId = req.body.groupId;
+        const file = req.file;
 
         const fileContent = fs.readFileSync(file.path);
 
@@ -317,7 +350,8 @@ const postFile = async (req, res) => {
 
         const msg = {
             fileName: file.originalname,
-            fileUrl: s3Response.Location
+            fileUrl: s3Response.Location,
+            type: file.mimetype
         };
 
         const messageResponse = await Chat.create({
@@ -331,6 +365,65 @@ const postFile = async (req, res) => {
         await setMessageStatusAsUnseen(groupId, messageResponse.id, req);
 
         return res.status(200).json({ success: true, message: 'File uploaded successfully!', fileObj: messageResponse });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
+
+const getNonMembersList = async (req, res) => {
+    try {
+        const groupId = +req.params.groupId;
+        const group = await Group.findOne({ where: { id: groupId } });
+        let participants = await group.getUsers({ attributes: ['id'] });
+        participants = participants.map(participant => participant.id);
+        const nonParticipants = await User.findAll({ where: { id: { [Op.notIn]: participants } }, attributes: ['id', 'name', 'email', 'phoneNo'] });
+        return res.status(200).json({ success: true, users: nonParticipants });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: "Something went wrong!" });
+    }
+}
+
+const addMoreMembersToGroup = async (req, res) => {
+    try {
+        const groupId = +req.params.groupId;
+        const members = req.body.members;
+        const group = await Group.findOne({ where: { id: groupId } });
+        if(!group)
+                return res.status(400).json({ success: false, message: 'Bad request! Group Not found.' });
+        members.forEach(async (userId) => {
+            const user = await User.findOne({ where: { id: userId } });
+            if(!user)
+                return res.status(400).json({ success: false, message: 'Bad request! User Not found.' });
+            await group.addUser(user);
+        })
+
+        return res.status(200).json({ success: true, group: group });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
+
+const leaveGroup = async (req, res) => {
+    try {
+        const groupId = +req.params.groupId;
+        const group = await Group.findOne({ where: { id: groupId } });
+        await group.removeUser(req.user.id);
+        return res.status(200).json({ success: true });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ success: false, message: 'Something went wrong!' });
+    }
+}
+
+const getNewGroups = async (req, res) => {
+    try {
+        let userGroups = await req.user.getGroups({ attributes: ['id'] });
+        userGroups = userGroups.map(group => group.id);
+        const newGroups = await Group.findAll({ where: { id: { [Op.notIn]: userGroups } } });
+        return res.status(200).json({ success: true, newGroups: newGroups });
     } catch(err) {
         console.log(err);
         return res.status(500).json({ success: false, message: 'Something went wrong!' });
@@ -345,6 +438,7 @@ const generateAccessToken = function (user) {
 module.exports = {
     registerUser,
     loginUser,
+    verify,
     postMessage,
     postFile,
     getMessages,
@@ -352,11 +446,15 @@ module.exports = {
     getOlderMessages,
     markMessagesAsSeen,
     createGroup,
-    getAllUsers,
+    getAllOtherUsers,
     getGroups,
     getParticipants,
     getGroupAdmins,
     addGroupAdmin,
     removeGroupAdmin,
-    removeUserFromGroup
+    removeUserFromGroup,
+    getNonMembersList,
+    addMoreMembersToGroup,
+    leaveGroup,
+    getNewGroups
 };
